@@ -7,9 +7,9 @@
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:151045611748:android:0b5dec917f991edb928cf1",
+        "mobilesdk_app_id": "1:151045611748:android:b018fa54f54ed990928cf1",
         "android_client_info": {
-          "package_name": "om.studyiqa.study_for_ever"
+          "package_name": "com.studyiqa.study_for_ever"
         }
       },
       "oauth_client": [],
