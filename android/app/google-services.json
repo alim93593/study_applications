@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "151045611748",
+    "project_id": "study-forever-a0600",
+    "storage_bucket": "study-forever-a0600.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:151045611748:android:0b5dec917f991edb928cf1",
+        "android_client_info": {
+          "package_name": "om.studyiqa.study_for_ever"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBrO3YZrsc6QdXgNeiF14uYmwKVDGt8UjM"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
