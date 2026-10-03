@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../../theme/app_colors.dart';
+import '../../theme/app_text_styles.dart';
 
 class GlassAvatar extends StatelessWidget {
   final String? imageUrl;
@@ -56,9 +57,8 @@ class GlassAvatar extends StatelessWidget {
     return Center(
       child: Text(
         initials,
-        style: TextStyle(
+        style: AppTextStyles.titleLarge.copyWith(
           fontSize: size * 0.4,
-          fontWeight: FontWeight.bold,
           color: AppColors.primary,
         ),
       ),

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../../theme/app_colors.dart';
+import '../../theme/app_text_styles.dart';
 
 class AppSnackBar {
   AppSnackBar._();
@@ -58,16 +59,15 @@ class _GlassSnackBarWidgetState extends State<_GlassSnackBarWidget>
       duration: const Duration(milliseconds: 350),
     );
 
-    _fadeAnimation = Tween<double>(begin: 0.0, end: 1.0).animate(
-      CurvedAnimation(parent: _controller, curve: Curves.easeOut),
-    );
+    _fadeAnimation = Tween<double>(
+      begin: 0.0,
+      end: 1.0,
+    ).animate(CurvedAnimation(parent: _controller, curve: Curves.easeOut));
 
     _slideAnimation = Tween<Offset>(
       begin: const Offset(0, -0.5),
       end: Offset.zero,
-    ).animate(
-      CurvedAnimation(parent: _controller, curve: Curves.easeOutCubic),
-    );
+    ).animate(CurvedAnimation(parent: _controller, curve: Curves.easeOutCubic));
 
     _controller.forward();
 
@@ -111,8 +111,9 @@ class _GlassSnackBarWidgetState extends State<_GlassSnackBarWidget>
                 ),
                 boxShadow: [
                   BoxShadow(
-                    color: (widget.isError ? AppColors.error : AppColors.success)
-                        .withValues(alpha: 0.3),
+                    color:
+                        (widget.isError ? AppColors.error : AppColors.success)
+                            .withValues(alpha: 0.3),
                     blurRadius: 20,
                     spreadRadius: -2,
                     offset: const Offset(0, 4),
@@ -129,7 +130,9 @@ class _GlassSnackBarWidgetState extends State<_GlassSnackBarWidget>
                       borderRadius: BorderRadius.circular(8),
                     ),
                     child: Icon(
-                      widget.isError ? Icons.error_outline_rounded : Icons.check_circle_outline_rounded,
+                      widget.isError
+                          ? Icons.error_outline_rounded
+                          : Icons.check_circle_outline_rounded,
                       color: Colors.white,
                       size: 18,
                     ),
@@ -138,11 +141,7 @@ class _GlassSnackBarWidgetState extends State<_GlassSnackBarWidget>
                   Expanded(
                     child: Text(
                       widget.message,
-                      style: const TextStyle(
-                        color: Colors.white,
-                        fontSize: 14,
-                        fontWeight: FontWeight.w500,
-                      ),
+                      style: AppTextStyles.labelLarge,
                     ),
                   ),
                   GestureDetector(

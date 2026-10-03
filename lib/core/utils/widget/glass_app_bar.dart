@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../../navigator/app_navigator.dart';
 import '../../theme/app_colors.dart';
+import '../../theme/app_text_styles.dart';
 
 class GlassAppBar extends StatelessWidget {
   final String title;
@@ -30,19 +31,9 @@ class GlassAppBar extends StatelessWidget {
                   onPressed: onBack ?? () => AppNavigator.pop(),
                 )
               : const SizedBox(width: 48),
-          Text(
-            title,
-            style: const TextStyle(
-              fontSize: 20,
-              fontWeight: FontWeight.bold,
-              color: Colors.white,
-            ),
-          ),
+          Text(title, style: AppTextStyles.titleLarge),
           actions != null && actions!.isNotEmpty
-              ? Row(
-                  mainAxisSize: MainAxisSize.min,
-                  children: actions!,
-                )
+              ? Row(mainAxisSize: MainAxisSize.min, children: actions!)
               : const SizedBox(width: 48),
         ],
       ),

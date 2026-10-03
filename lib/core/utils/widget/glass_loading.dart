@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../../theme/app_colors.dart';
+import '../../theme/app_text_styles.dart';
 
 class GlassLoading extends StatelessWidget {
   final String? message;
@@ -52,13 +53,7 @@ class GlassLoading extends StatelessWidget {
               ),
               if (message != null) ...[
                 const SizedBox(height: 16),
-                Text(
-                  message!,
-                  style: const TextStyle(
-                    color: AppColors.textPrimary,
-                    fontSize: 14,
-                  ),
-                ),
+                Text(message!, style: AppTextStyles.labelSurface),
               ],
             ],
           ),

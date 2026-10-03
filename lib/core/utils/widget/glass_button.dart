@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../../theme/app_colors.dart';
+import '../../theme/app_text_styles.dart';
 
 class GlassButton extends StatelessWidget {
   final String text;
@@ -72,10 +73,8 @@ class GlassButton extends StatelessWidget {
                       ],
                       Text(
                         text,
-                        style: TextStyle(
+                        style: AppTextStyles.titleSmall.copyWith(
                           color: isOutlined ? AppColors.primary : Colors.white,
-                          fontSize: 16,
-                          fontWeight: FontWeight.w600,
                         ),
                       ),
                     ],
@@ -141,10 +140,8 @@ class GlassSocialButton extends StatelessWidget {
                       const SizedBox(width: 12),
                       Text(
                         text,
-                        style: const TextStyle(
+                        style: AppTextStyles.titleSmall.copyWith(
                           color: AppColors.textPrimary,
-                          fontSize: 16,
-                          fontWeight: FontWeight.w600,
                         ),
                       ),
                     ],

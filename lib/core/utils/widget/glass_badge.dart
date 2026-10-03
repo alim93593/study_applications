@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../../theme/app_colors.dart';
+import '../../theme/app_text_styles.dart';
 
 class GlassBadge extends StatelessWidget {
   final String text;
@@ -46,8 +47,7 @@ class GlassBadge extends StatelessWidget {
           ],
           Text(
             text,
-            style: TextStyle(
-              fontSize: 12,
+            style: AppTextStyles.captionGlass.copyWith(
               fontWeight: FontWeight.w600,
               color: _getTextColor(),
             ),
