@@ -10,9 +10,8 @@ import '../../domain/repositories/auth_repository.dart';
 class AuthRepositoryImpl implements AuthRepository {
   final AuthRemoteDataSource _authRemoteDataSource;
 
-  AuthRepositoryImpl({
-    required AuthRemoteDataSource authRemoteDataSource,
-  }) : _authRemoteDataSource = authRemoteDataSource;
+  AuthRepositoryImpl({required AuthRemoteDataSource authRemoteDataSource})
+    : _authRemoteDataSource = authRemoteDataSource;
 
   @override
   Future<Either<Failure, UserEntity>> signInWithEmailAndPassword({
@@ -20,23 +19,21 @@ class AuthRepositoryImpl implements AuthRepository {
     required String password,
   }) async {
     try {
-      final userCredential = await _authRemoteDataSource.signInWithEmailAndPassword(
-        email: email,
-        password: password,
-      );
-      
+      final userCredential = await _authRemoteDataSource
+          .signInWithEmailAndPassword(email: email, password: password);
+
       // Get user data from Firestore
       final userData = await _authRemoteDataSource.getUserFromFirestore(
         userCredential.user!.uid,
       );
-      
+
       if (userData != null) {
-        final user = UserModel.fromMap(userData).copyWith(
-          uid: userCredential.user!.uid,
-        );
+        final user = UserModel.fromMap(
+          userData,
+        ).copyWith(uid: userCredential.user!.uid);
         return Right(user);
       }
-      
+
       // If no data in Firestore, create from Firebase Auth
       final user = UserModel.fromFirebaseUser(userCredential.user);
       return Right(user);
@@ -58,11 +55,9 @@ class AuthRepositoryImpl implements AuthRepository {
     DateTime? dateOfBirth,
   }) async {
     try {
-      final userCredential = await _authRemoteDataSource.createUserWithEmailAndPassword(
-        email: email,
-        password: password,
-      );
-      
+      final userCredential = await _authRemoteDataSource
+          .createUserWithEmailAndPassword(email: email, password: password);
+
       // Save user data to Firestore
       await _authRemoteDataSource.saveUserToFirestore(
         uid: userCredential.user!.uid,
@@ -71,7 +66,7 @@ class AuthRepositoryImpl implements AuthRepository {
         phoneNumber: phoneNumber,
         dateOfBirth: dateOfBirth,
       );
-      
+
       final user = UserModel(
         uid: userCredential.user!.uid,
         name: name,
@@ -81,7 +76,7 @@ class AuthRepositoryImpl implements AuthRepository {
         createdAt: DateTime.now(),
         updatedAt: DateTime.now(),
       );
-      
+
       return Right(user);
     } on AuthException catch (e) {
       return Left(AuthFailure(e.message, statusCode: e.statusCode));
@@ -124,14 +119,14 @@ class AuthRepositoryImpl implements AuthRepository {
         final userData = await _authRemoteDataSource.getUserFromFirestore(
           firebaseUser.uid,
         );
-        
+
         if (userData != null) {
-          final user = UserModel.fromMap(userData).copyWith(
-            uid: firebaseUser.uid,
-          );
+          final user = UserModel.fromMap(
+            userData,
+          ).copyWith(uid: firebaseUser.uid);
           return Right(user);
         }
-        
+
         // If no data in Firestore, create from Firebase Auth
         final user = UserModel.fromFirebaseUser(firebaseUser);
         return Right(user);
@@ -146,12 +141,12 @@ class AuthRepositoryImpl implements AuthRepository {
   Future<Either<Failure, UserEntity>> getUserProfile(String uid) async {
     try {
       final userData = await _authRemoteDataSource.getUserFromFirestore(uid);
-      
+
       if (userData != null) {
         final user = UserModel.fromMap(userData).copyWith(uid: uid);
         return Right(user);
       }
-      
+
       return Left(AuthFailure('User not found'));
     } catch (e) {
       return Left(AuthFailure('Failed to get user profile'));
@@ -168,17 +163,17 @@ class AuthRepositoryImpl implements AuthRepository {
   }) async {
     try {
       final updateData = <String, dynamic>{};
-      
+
       if (name != null) updateData['name'] = name;
       if (phoneNumber != null) updateData['phoneNumber'] = phoneNumber;
       if (dateOfBirth != null) updateData['dateOfBirth'] = dateOfBirth;
       if (photoURL != null) updateData['photoURL'] = photoURL;
-      
+
       await _authRemoteDataSource.updateUserInFirestore(
         uid: uid,
         userData: updateData,
       );
-      
+
       return const Right(null);
     } catch (e) {
       return Left(AuthFailure('Failed to update user profile'));

@@ -23,15 +23,15 @@ class UserEntity extends Equatable {
 
   @override
   List<Object?> get props => [
-        uid,
-        name,
-        email,
-        phoneNumber,
-        dateOfBirth,
-        photoURL,
-        createdAt,
-        updatedAt,
-      ];
+    uid,
+    name,
+    email,
+    phoneNumber,
+    dateOfBirth,
+    photoURL,
+    createdAt,
+    updatedAt,
+  ];
 
   UserEntity copyWith({
     String? uid,

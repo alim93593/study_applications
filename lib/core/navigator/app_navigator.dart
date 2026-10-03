@@ -1,11 +1,6 @@
 import 'package:flutter/material.dart';
 
-import '../../features/splash/presentation/pages/splash_page.dart';
-import '../../features/auth/presentation/pages/login_page.dart';
-import '../../features/auth/presentation/pages/register_page.dart';
-import '../../features/home/presentation/pages/home_page.dart';
-import '../../features/profile/presentation/pages/profile_page.dart';
-import '../../features/profile/presentation/pages/edit_profile_page.dart';
+import '../router/app_router.dart';
 
 class AppNavigator {
   AppNavigator._();
@@ -15,31 +10,15 @@ class AppNavigator {
 
   static BuildContext? get context => navigatorKey.currentContext;
 
-  static const String splash = '/';
-  static const String login = '/login';
-  static const String register = '/register';
-  static const String home = '/home';
-  static const String profile = '/profile';
-  static const String editProfile = '/edit-profile';
-
-  static Route<dynamic> onGenerateRoute(RouteSettings settings) {
-    switch (settings.name) {
-      case splash:
-        return MaterialPageRoute(builder: (_) => const SplashPage());
-      case login:
-        return MaterialPageRoute(builder: (_) => const LoginPage());
-      case register:
-        return MaterialPageRoute(builder: (_) => const RegisterPage());
-      case home:
-        return MaterialPageRoute(builder: (_) => const HomePage());
-      case profile:
-        return MaterialPageRoute(builder: (_) => const ProfilePage());
-      case editProfile:
-        return MaterialPageRoute(builder: (_) => const EditProfilePage());
-      default:
-        return MaterialPageRoute(builder: (_) => const SplashPage());
-    }
-  }
+  // Route constants live only in AppRouter (single source of truth);
+  // these aliases keep the call sites readable without duplication.
+  static const String splash = AppRouter.splash;
+  static const String login = AppRouter.login;
+  static const String register = AppRouter.register;
+  static const String forgotPassword = AppRouter.forgotPassword;
+  static const String home = AppRouter.home;
+  static const String profile = AppRouter.profile;
+  static const String editProfile = AppRouter.editProfile;
 
   static void push(String routeName, {Object? arguments}) {
     navigatorKey.currentState?.pushNamed(routeName, arguments: arguments);
@@ -53,10 +32,7 @@ class AppNavigator {
   }
 
   static void pushAndRemoveUntil(String routeName) {
-    navigatorKey.currentState?.pushNamedAndRemoveUntil(
-      routeName,
-      (_) => false,
-    );
+    navigatorKey.currentState?.pushNamedAndRemoveUntil(routeName, (_) => false);
   }
 
   static void pop() {

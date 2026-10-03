@@ -4,6 +4,7 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 
 import '../localization/app_strings.dart';
+import '../theme/app_text_styles.dart';
 
 class NetworkHandler {
   static final NetworkHandler _instance = NetworkHandler._internal();
@@ -19,8 +20,9 @@ class NetworkHandler {
 
   void initialize() {
     _subscription = _connectivity.onConnectivityChanged.listen((results) {
-      final isConnected =
-          results.any((result) => result != ConnectivityResult.none);
+      final isConnected = results.any(
+        (result) => result != ConnectivityResult.none,
+      );
       _connectionController.add(isConnected);
     });
   }
@@ -53,16 +55,13 @@ class NoInternetWidget extends StatelessWidget {
             const SizedBox(height: 24),
             Text(
               AppStrings.noInternetConnection.tr(),
-              style: const TextStyle(
-                fontSize: 20,
-                fontWeight: FontWeight.bold,
-              ),
+              style: AppTextStyles.titleNetwork,
             ),
             const SizedBox(height: 8),
             Text(
               AppStrings.checkConnectionMessage.tr(),
               textAlign: TextAlign.center,
-              style: const TextStyle(color: Colors.grey),
+              style: AppTextStyles.bodyNetwork,
             ),
             const SizedBox(height: 24),
             ElevatedButton(

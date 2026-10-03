@@ -3,6 +3,7 @@ import 'dart:ui';
 import 'package:flutter/material.dart';
 
 import '../../theme/app_colors.dart';
+import '../../theme/app_text_styles.dart';
 
 class GlassBottomSheet extends StatelessWidget {
   final Widget child;
@@ -67,14 +68,7 @@ class GlassBottomSheet extends StatelessWidget {
               ),
               const SizedBox(height: 16),
               if (title != null) ...[
-                Text(
-                  title!,
-                  style: const TextStyle(
-                    fontSize: 20,
-                    fontWeight: FontWeight.bold,
-                    color: AppColors.textPrimary,
-                  ),
-                ),
+                Text(title!, style: AppTextStyles.titleSurface),
                 const SizedBox(height: 16),
               ],
               child,

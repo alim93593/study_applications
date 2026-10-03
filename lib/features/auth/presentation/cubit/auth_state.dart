@@ -1,5 +1,8 @@
 import 'package:equatable/equatable.dart';
+import 'package:easy_localization/easy_localization.dart';
 
+import '../../../../core/localization/app_strings.dart';
+import '../../../../core/utils/formatters/app_date_formatter.dart';
 import '../../domain/entities/user_entity.dart';
 
 enum AuthStatus {
@@ -37,6 +40,21 @@ class AuthState extends Equatable {
       errorMessage: errorMessage ?? this.errorMessage,
       email: email ?? this.email,
     );
+  }
+
+  // Display-ready values: the UI reads them as-is (Zero UI Logic rule).
+  String get phoneDisplay {
+    final phone = user?.phoneNumber;
+    if (phone == null || phone.trim().isEmpty) {
+      return AppStrings.notProvided.tr();
+    }
+    return phone;
+  }
+
+  String get dobDisplay {
+    final dob = user?.dateOfBirth;
+    if (dob == null) return AppStrings.notProvided.tr();
+    return AppDateFormatter.dob(dob);
   }
 
   @override

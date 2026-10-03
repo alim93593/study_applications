@@ -16,6 +16,8 @@ import '../../features/auth/domain/usecases/get_current_user_use_case.dart';
 import '../../features/auth/domain/usecases/get_user_profile_use_case.dart';
 import '../../features/auth/domain/usecases/update_user_profile_use_case.dart';
 import '../../features/auth/presentation/cubit/auth_cubit.dart';
+import '../../features/auth/presentation/cubit/forgot_password_cubit.dart';
+import '../../features/profile/presentation/cubit/profile_cubit.dart';
 
 final sl = GetIt.instance;
 
@@ -33,10 +35,7 @@ Future<void> init() async {
 
   // Data sources
   sl.registerLazySingleton<AuthRemoteDataSource>(
-    () => AuthRemoteDataSourceImpl(
-      firebaseAuth: sl(),
-      firestore: sl(),
-    ),
+    () => AuthRemoteDataSourceImpl(firebaseAuth: sl(), firestore: sl()),
   );
 
   // Repositories
@@ -45,6 +44,9 @@ Future<void> init() async {
   );
 
   // Use cases
+  // resetPasswordUseCase stays registered: no UI flow calls it yet, and the
+  // AuthCubit method was removed as dead code until the forgot-password
+  // screen lands.
   sl.registerLazySingleton(() => SignInUseCase(sl()));
   sl.registerLazySingleton(() => SignUpUseCase(sl()));
   sl.registerLazySingleton(() => SignOutUseCase(sl()));
@@ -59,10 +61,14 @@ Future<void> init() async {
       signInUseCase: sl(),
       signUpUseCase: sl(),
       signOutUseCase: sl(),
-      resetPasswordUseCase: sl(),
       getCurrentUserUseCase: sl(),
+    ),
+  );
+  sl.registerFactory(
+    () => ProfileCubit(
       getUserProfileUseCase: sl(),
       updateUserProfileUseCase: sl(),
     ),
   );
+  sl.registerFactory(() => ForgotPasswordCubit(resetPasswordUseCase: sl()));
 }

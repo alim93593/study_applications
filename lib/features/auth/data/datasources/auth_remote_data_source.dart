@@ -43,8 +43,8 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
   AuthRemoteDataSourceImpl({
     required FirebaseAuth firebaseAuth,
     required FirebaseFirestore firestore,
-  })  : _firebaseAuth = firebaseAuth,
-        _firestore = firestore;
+  }) : _firebaseAuth = firebaseAuth,
+       _firestore = firestore;
 
   @override
   Future<UserCredential> signInWithEmailAndPassword({
@@ -147,7 +147,10 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
   AuthException _handleAuthException(FirebaseAuthException e) {
     switch (e.code) {
       case 'user-not-found':
-        return AuthException(message: 'No user found with this email', statusCode: 404);
+        return AuthException(
+          message: 'No user found with this email',
+          statusCode: 404,
+        );
       case 'wrong-password':
         return AuthException(message: 'Wrong password', statusCode: 401);
       case 'email-already-in-use':
@@ -157,15 +160,27 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
       case 'invalid-email':
         return AuthException(message: 'Invalid email address', statusCode: 400);
       case 'user-disabled':
-        return AuthException(message: 'User account is disabled', statusCode: 403);
+        return AuthException(
+          message: 'User account is disabled',
+          statusCode: 403,
+        );
       case 'operation-not-allowed':
         return AuthException(message: 'Operation not allowed', statusCode: 403);
       case 'too-many-requests':
-        return AuthException(message: 'Too many requests. Please try again later', statusCode: 429);
+        return AuthException(
+          message: 'Too many requests. Please try again later',
+          statusCode: 429,
+        );
       case 'network-request-failed':
-        return AuthException(message: 'Network error occurred', statusCode: 503);
+        return AuthException(
+          message: 'Network error occurred',
+          statusCode: 503,
+        );
       default:
-        return AuthException(message: e.message ?? 'An unknown error occurred', statusCode: 500);
+        return AuthException(
+          message: e.message ?? 'An unknown error occurred',
+          statusCode: 500,
+        );
     }
   }
 }

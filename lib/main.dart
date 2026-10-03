@@ -6,6 +6,7 @@ import 'package:easy_localization/easy_localization.dart';
 import 'core/di/service_locator.dart' as di;
 import 'core/localization/app_strings.dart';
 import 'core/navigator/app_navigator.dart';
+import 'core/router/app_router.dart';
 import 'core/theme/app_theme.dart';
 import 'core/localization/app_localizations.dart';
 import 'core/network/network_handler.dart';
@@ -19,13 +20,15 @@ void main() async {
   await di.init();
   NetworkHandler().initialize();
 
-  SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
-    statusBarColor: Colors.transparent,
-    statusBarIconBrightness: Brightness.light,
-    statusBarBrightness: Brightness.dark,
-    systemNavigationBarColor: Colors.transparent,
-    systemNavigationBarIconBrightness: Brightness.light,
-  ));
+  SystemChrome.setSystemUIOverlayStyle(
+    const SystemUiOverlayStyle(
+      statusBarColor: Colors.transparent,
+      statusBarIconBrightness: Brightness.light,
+      statusBarBrightness: Brightness.dark,
+      systemNavigationBarColor: Colors.transparent,
+      systemNavigationBarIconBrightness: Brightness.light,
+    ),
+  );
 
   runApp(
     EasyLocalization(
@@ -43,11 +46,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MultiBlocProvider(
-      providers: [
-        BlocProvider<AuthCubit>(
-          create: (_) => di.sl<AuthCubit>(),
-        ),
-      ],
+      providers: [BlocProvider<AuthCubit>(create: (_) => di.sl<AuthCubit>())],
       child: NetworkWrapper(
         child: MaterialApp(
           navigatorKey: AppNavigator.navigatorKey,
@@ -59,8 +58,8 @@ class MyApp extends StatelessWidget {
           locale: context.locale,
           supportedLocales: context.supportedLocales,
           localizationsDelegates: context.localizationDelegates,
-          initialRoute: AppNavigator.splash,
-          onGenerateRoute: AppNavigator.onGenerateRoute,
+          initialRoute: AppRouter.splash,
+          onGenerateRoute: AppRouter.onGenerateRoute,
         ),
       ),
     );

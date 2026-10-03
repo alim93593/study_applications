@@ -12,6 +12,9 @@ abstract class AppStrings {
   static const signUpToGetStarted = 'sign_up_to_get_started';
   static const createAccount = 'create_account';
   static const forgotPassword = 'forgot_password';
+  static const resetPasswordInstructions = 'reset_password_instructions';
+  static const sendResetLink = 'send_reset_link';
+  static const resetEmailSent = 'reset_email_sent';
   static const alreadyHaveAccount = 'already_have_account';
   static const dontHaveAccount = 'dont_have_account';
 

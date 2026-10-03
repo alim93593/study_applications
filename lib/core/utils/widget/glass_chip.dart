@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../../theme/app_colors.dart';
+import '../../theme/app_text_styles.dart';
 
 class GlassChip extends StatelessWidget {
   final String label;
@@ -55,9 +56,8 @@ class GlassChip extends StatelessWidget {
             ],
             Text(
               label,
-              style: TextStyle(
-                fontSize: 14,
-                fontWeight: isSelected ? FontWeight.w600 : FontWeight.normal,
+              style: AppTextStyles.labelSurface.copyWith(
+                fontWeight: isSelected ? FontWeight.w600 : null,
                 color: isSelected ? AppColors.primary : AppColors.textSecondary,
               ),
             ),

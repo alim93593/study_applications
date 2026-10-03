@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../../theme/app_colors.dart';
+import '../../theme/app_text_styles.dart';
 
 class GlassSnackBar {
   static void show({
@@ -14,12 +15,7 @@ class GlassSnackBar {
         children: [
           Icon(_getIcon(type), color: Colors.white, size: 20),
           const SizedBox(width: 12),
-          Expanded(
-            child: Text(
-              message,
-              style: const TextStyle(color: Colors.white, fontSize: 14),
-            ),
-          ),
+          Expanded(child: Text(message, style: AppTextStyles.labelMedium)),
         ],
       ),
       backgroundColor: _getColor(type),

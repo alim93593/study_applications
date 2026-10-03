@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../../theme/app_colors.dart';
+import '../../theme/app_text_styles.dart';
 
 class GlassSwitch extends StatelessWidget {
   final bool value;
@@ -21,13 +22,7 @@ class GlassSwitch extends StatelessWidget {
       child: Row(
         children: [
           if (label != null) ...[
-            Text(
-              label!,
-              style: const TextStyle(
-                fontSize: 16,
-                color: AppColors.textPrimary,
-              ),
-            ),
+            Text(label!, style: AppTextStyles.bodySurface),
             const SizedBox(width: 12),
           ],
           AnimatedContainer(

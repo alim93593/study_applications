@@ -3,6 +3,7 @@ import 'dart:ui';
 import 'package:flutter/material.dart';
 
 import '../../theme/app_colors.dart';
+import '../../theme/app_text_styles.dart';
 
 class GlassDialog extends StatelessWidget {
   final Widget child;
@@ -46,14 +47,7 @@ class GlassDialog extends StatelessWidget {
               mainAxisSize: MainAxisSize.min,
               children: [
                 if (title != null) ...[
-                  Text(
-                    title!,
-                    style: const TextStyle(
-                      fontSize: 20,
-                      fontWeight: FontWeight.bold,
-                      color: AppColors.textPrimary,
-                    ),
-                  ),
+                  Text(title!, style: AppTextStyles.titleSurface),
                   const SizedBox(height: 16),
                 ],
                 child,
