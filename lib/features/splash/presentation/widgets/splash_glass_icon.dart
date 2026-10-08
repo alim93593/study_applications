@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:glassmorphism/glassmorphism.dart';
 
 import '../../../../core/theme/app_colors.dart';
+import '../../../../core/theme/app_colors_extension.dart';
 import 'splash_shimmer.dart';
 
-/// Glass school icon with animated glow and shimmer sweep.
+/// School icon on a light surface circle with animated glow and shimmer sweep.
 class SplashGlassIcon extends StatelessWidget {
   const SplashGlassIcon({
     super.key,
@@ -34,7 +34,7 @@ class SplashGlassIcon extends StatelessWidget {
                 spreadRadius: 20 * glowAnimation.value,
               ),
               BoxShadow(
-                color: Colors.white.withValues(
+                color: AppColors.primary.withValues(
                   alpha: glowAnimation.value * 0.18,
                 ),
                 blurRadius: 90 * glowAnimation.value,
@@ -45,33 +45,21 @@ class SplashGlassIcon extends StatelessWidget {
           child: Stack(
             alignment: Alignment.center,
             children: [
-              GlassmorphicContainer(
+              Container(
                 width: 160,
                 height: 160,
-                borderRadius: 80,
-                blur: 40,
-                alignment: Alignment.center,
-                border: 3,
-                linearGradient: LinearGradient(
-                  begin: Alignment.topLeft,
-                  end: Alignment.bottomRight,
-                  colors: [
-                    Colors.white.withValues(alpha: 0.3),
-                    Colors.white.withValues(alpha: 0.08),
-                  ],
-                ),
-                borderGradient: LinearGradient(
-                  begin: Alignment.topLeft,
-                  end: Alignment.bottomRight,
-                  colors: [
-                    Colors.white.withValues(alpha: 0.45),
-                    Colors.white.withValues(alpha: 0.15),
-                  ],
+                decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  color: context.colors.card,
+                  border: Border.all(
+                    color: context.colors.softBorder,
+                    width: 3,
+                  ),
                 ),
                 child: const Icon(
                   Icons.school_rounded,
                   size: 80,
-                  color: Colors.white,
+                  color: AppColors.primary,
                 ),
               ),
               SplashShimmer(shimmerController: shimmerController),

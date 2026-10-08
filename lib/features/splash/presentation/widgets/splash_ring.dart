@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import '../../../../core/theme/app_colors.dart';
+
 /// One expanding ring around the splash icon.
 class SplashRing extends StatelessWidget {
   const SplashRing({
@@ -30,7 +32,7 @@ class SplashRing extends StatelessWidget {
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
                 border: Border.all(
-                  color: Colors.white.withValues(alpha: alpha),
+                  color: AppColors.primary.withValues(alpha: alpha),
                   width: width,
                 ),
               ),

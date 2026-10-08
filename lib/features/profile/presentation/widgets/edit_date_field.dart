@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../../core/localization/app_strings.dart';
-import '../../../../core/theme/app_colors.dart';
+import '../../../../core/theme/app_colors_extension.dart';
 import '../../../../core/theme/app_text_styles.dart';
 import '../cubit/profile_cubit.dart';
 
@@ -24,13 +24,13 @@ class EditDateField extends StatelessWidget {
             width: double.infinity,
             padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
             decoration: BoxDecoration(
-              color: AppColors.glassWhite,
+              color: context.colors.mutedCard,
               borderRadius: BorderRadius.circular(12),
-              border: Border.all(color: AppColors.glassBorder, width: 1),
+              border: Border.all(color: context.colors.softBorder),
             ),
             child: Row(
               children: [
-                const Icon(Icons.cake, color: Colors.white),
+                Icon(Icons.cake, color: context.colors.textSecondary),
                 const SizedBox(width: 12),
                 Expanded(
                   child: Column(
@@ -38,21 +38,27 @@ class EditDateField extends StatelessWidget {
                     children: [
                       Text(
                         AppStrings.dateOfBirth.tr(),
-                        style: AppTextStyles.labelGlass,
+                        style: AppTextStyles.labelSurface.copyWith(
+                          color: context.colors.textSecondary,
+                        ),
                       ),
                       const SizedBox(height: 4),
                       Text(
                         display,
                         style: hasDate
-                            ? AppTextStyles.bodyLarge
-                            : AppTextStyles.bodyGlass,
+                            ? AppTextStyles.bodySurface.copyWith(
+                                color: context.colors.textPrimary,
+                              )
+                            : AppTextStyles.bodyMutedSurface.copyWith(
+                                color: context.colors.textSecondary,
+                              ),
                       ),
                     ],
                   ),
                 ),
-                const Icon(
+                Icon(
                   Icons.arrow_forward_ios,
-                  color: Colors.white,
+                  color: context.colors.textSecondary,
                   size: 16,
                 ),
               ],

@@ -10,11 +10,13 @@ class GlassPhoneField extends StatelessWidget {
     this.controller,
     this.validator,
     this.onChanged,
+    this.isLightScreen = false,
   });
 
   final TextEditingController? controller;
   final String? Function(String?)? validator;
   final Function(String)? onChanged;
+  final bool isLightScreen;
 
   @override
   Widget build(BuildContext context) {
@@ -26,6 +28,7 @@ class GlassPhoneField extends StatelessWidget {
       keyboardType: TextInputType.phone,
       validator: validator ?? AppValidators.phone,
       onChanged: onChanged,
+      isLightScreen: isLightScreen,
     );
   }
 }

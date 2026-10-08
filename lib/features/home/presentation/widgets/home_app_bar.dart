@@ -3,8 +3,8 @@ import 'package:flutter/material.dart';
 
 import '../../../../core/localization/app_strings.dart';
 import '../../../../core/navigator/app_navigator.dart';
-import '../../../../core/theme/app_colors.dart';
-import '../../../../core/utils/widget/glass_app_bar.dart';
+import '../../../../core/theme/app_colors_extension.dart';
+import '../../../../core/theme/app_text_styles.dart';
 import 'home_logout_dialog.dart';
 
 /// Home app bar with profile + logout actions.
@@ -13,19 +13,33 @@ class HomeAppBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return GlassAppBar(
-      title: AppStrings.appName.tr(),
-      actions: [
-        _IconButton(
-          icon: Icons.person,
-          onPressed: () => AppNavigator.push(AppNavigator.profile),
-        ),
-        const SizedBox(width: 8),
-        _IconButton(
-          icon: Icons.logout,
-          onPressed: () => showLogoutDialog(context),
-        ),
-      ],
+    return Padding(
+      padding: const EdgeInsets.all(16),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Text(
+            AppStrings.appName.tr(),
+            style: AppTextStyles.titleSurface.copyWith(
+              color: context.colors.textPrimary,
+            ),
+          ),
+          Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              _IconButton(
+                icon: Icons.person,
+                onPressed: () => AppNavigator.push(AppNavigator.profile),
+              ),
+              const SizedBox(width: 8),
+              _IconButton(
+                icon: Icons.logout,
+                onPressed: () => showLogoutDialog(context),
+              ),
+            ],
+          ),
+        ],
+      ),
     );
   }
 }
@@ -42,12 +56,12 @@ class _IconButton extends StatelessWidget {
       width: 48,
       height: 48,
       decoration: BoxDecoration(
-        color: AppColors.glassWhite,
+        color: context.colors.card,
         borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: AppColors.glassBorder, width: 1),
+        border: Border.all(color: context.colors.softBorder),
       ),
       child: IconButton(
-        icon: Icon(icon, color: Colors.white, size: 24),
+        icon: Icon(icon, color: context.colors.textPrimary, size: 24),
         onPressed: onPressed,
       ),
     );

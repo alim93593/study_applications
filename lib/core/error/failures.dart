@@ -1,40 +1,43 @@
+import '../localization/error_strings.dart';
+
 abstract class Failure {
   final String message;
   final int? statusCode;
-  
+
   Failure(this.message, {this.statusCode});
-  
+
   @override
   String toString() => message;
 }
 
-// Auth Failures
+// Auth Failures — messages are translation keys (displayed via .tr()).
 class AuthFailure extends Failure {
   AuthFailure(super.message, {super.statusCode});
 }
 
 class EmailAlreadyInUseFailure extends AuthFailure {
-  EmailAlreadyInUseFailure() : super('Email already in use', statusCode: 400);
+  EmailAlreadyInUseFailure()
+    : super(ErrorStrings.errorEmailInUse, statusCode: 400);
 }
 
 class WrongPasswordFailure extends AuthFailure {
-  WrongPasswordFailure() : super('Wrong password', statusCode: 401);
+  WrongPasswordFailure() : super(ErrorStrings.errorWrongPassword, statusCode: 401);
 }
 
 class UserNotFoundFailure extends AuthFailure {
-  UserNotFoundFailure() : super('User not found', statusCode: 404);
+  UserNotFoundFailure() : super(ErrorStrings.errorUserNotFound, statusCode: 404);
 }
 
 class WeakPasswordFailure extends AuthFailure {
-  WeakPasswordFailure() : super('Password is too weak', statusCode: 400);
+  WeakPasswordFailure() : super(ErrorStrings.errorWeakPassword, statusCode: 400);
 }
 
 class NetworkFailure extends AuthFailure {
-  NetworkFailure() : super('Network error occurred', statusCode: 503);
+  NetworkFailure() : super(ErrorStrings.errorNetwork, statusCode: 503);
 }
 
 class UnknownAuthFailure extends AuthFailure {
-  UnknownAuthFailure() : super('An unknown error occurred', statusCode: 500);
+  UnknownAuthFailure() : super(ErrorStrings.errorUnknown, statusCode: 500);
 }
 
 // Cache Failures

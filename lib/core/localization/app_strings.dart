@@ -71,6 +71,14 @@ abstract class AppStrings {
   static const checkConnectionMessage = 'check_connection_message';
   static const retry = 'retry';
 
+  // Bottom nav + drawer (shared navigation labels)
+  static const navFocus = 'nav_focus';
+  static const navTasks = 'nav_tasks';
+  static const navSchedule = 'nav_schedule';
+  static const navStats = 'nav_stats';
+  static const statistics = 'statistics';
+  static const language = 'language';
+
   // General
   static const inputHelp = 'input_help';
   static const ok = 'ok';

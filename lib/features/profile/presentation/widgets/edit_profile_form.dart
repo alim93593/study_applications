@@ -53,9 +53,15 @@ class _EditProfileFormState extends State<EditProfileForm> {
           children: [
             const EditProfilePicture(),
             const SizedBox(height: 24),
-            GlassNameField(controller: _nameController),
+            GlassNameField(
+              controller: _nameController,
+              isLightScreen: true,
+            ),
             const SizedBox(height: 16),
-            GlassPhoneField(controller: _phoneController),
+            GlassPhoneField(
+              controller: _phoneController,
+              isLightScreen: true,
+            ),
             const SizedBox(height: 16),
             const EditDateField(),
             const SizedBox(height: 24),

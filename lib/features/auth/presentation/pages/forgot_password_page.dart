@@ -5,9 +5,9 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../../core/di/service_locator.dart';
 import '../../../../core/localization/app_strings.dart';
 import '../../../../core/navigator/app_navigator.dart';
-import '../../../../core/theme/app_colors.dart';
 import '../../../../core/utils/snackbar/app_snackbar.dart';
 import '../cubit/forgot_password_cubit.dart';
+import '../widgets/auth_background.dart';
 import '../widgets/auth_header.dart';
 import '../widgets/auth_link_row.dart';
 import '../widgets/forgot_password_form.dart';
@@ -46,49 +46,34 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
             } else if (state.status == ForgotPasswordStatus.error) {
               AppSnackBar.show(
                 context,
-                message: state.errorMessage ?? '',
+                message: state.errorMessage?.tr() ?? '',
                 isError: true,
               );
             }
           },
-          child: Container(
-            width: double.infinity,
-            height: double.infinity,
-            decoration: const BoxDecoration(
-              gradient: LinearGradient(
-                begin: Alignment.topLeft,
-                end: Alignment.bottomRight,
-                colors: [
-                  AppColors.primaryDark,
-                  AppColors.primary,
-                  AppColors.primaryMid,
+          child: AuthBackground(
+            child: SingleChildScrollView(
+              padding: const EdgeInsets.symmetric(horizontal: 24),
+              child: Column(
+                children: [
+                  const SizedBox(height: 60),
+                  const AuthHeader(
+                    icon: Icons.lock_reset,
+                    titleKey: AppStrings.forgotPassword,
+                    subtitleKey: AppStrings.resetPasswordInstructions,
+                  ),
+                  const SizedBox(height: 40),
+                  ForgotPasswordForm(
+                    formKey: _formKey,
+                    emailController: _emailController,
+                  ),
+                  const SizedBox(height: 24),
+                  AuthLinkRow(
+                    prefixKey: AppStrings.alreadyHaveAccount,
+                    actionKey: AppStrings.signIn,
+                    onTap: AppNavigator.pop,
+                  ),
                 ],
-              ),
-            ),
-            child: SafeArea(
-              child: SingleChildScrollView(
-                padding: const EdgeInsets.symmetric(horizontal: 24),
-                child: Column(
-                  children: [
-                    const SizedBox(height: 60),
-                    const AuthHeader(
-                      icon: Icons.lock_reset,
-                      titleKey: AppStrings.forgotPassword,
-                      subtitleKey: AppStrings.resetPasswordInstructions,
-                    ),
-                    const SizedBox(height: 40),
-                    ForgotPasswordForm(
-                      formKey: _formKey,
-                      emailController: _emailController,
-                    ),
-                    const SizedBox(height: 24),
-                    AuthLinkRow(
-                      prefixKey: AppStrings.alreadyHaveAccount,
-                      actionKey: AppStrings.signIn,
-                      onTap: AppNavigator.pop,
-                    ),
-                  ],
-                ),
               ),
             ),
           ),

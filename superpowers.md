@@ -13,7 +13,7 @@
 - **🚫 ممنوع `flutter_hooks` نهائيًا** — استخدم `StatelessWidget` أولاً؛ و`StatefulWidget` فقط في حالة الضرورة القصوى (ملكية Controllers/Animation/Streams) وبلا بديل أبسط.
 - كل State يستخدم **`copyWith`** (أو `freezed`) — الحالة Immutable دائمًا.
 - **`BlocProvider` على مستوى الشاشة** — لا Cubits عالمية في `main.dart` إلا لحالات التطبيق العامة (Theme/Locale/Auth).
-- **`BlocSelector`** هو الأداة الإلزامية للبناء — الـ Widget لا يُعاد بناؤه إلا عند تغيّر البيانات المحددة (بديل مقبول: `buildWhen`).
+- **`BlocSelector`** هو الأداة الإلزامية للبناء — الـ Widget لا يُعاد بناؤه إلا عند تغيّر البيانات المحددة — **وممنوع `BlocBuilder` نهائيًا (حتى مع `buildWhen`)**.
 - **Side Effects** (Navigation / SnackBar / Dialog) حصرًا عبر `BlocListener`.
 - **🚫 ZERO UI LOGIC — قاعدة مقدسة:** ممنوع أي منطق في الـ UI إطلاقًا — لا حسابات، لا تجميع، لا تحقق شرطي للأعمال، لا تنسيق تواريخ/أرقام داخل أي Widget. الـ Widget **يعرض الحالة ويُصدّر الأحداث فقط** — كل التفكير في الـ Cubit (والمنطق المعقد في UseCases). مثال: بدل `Text('${expenses.fold(0, (s,e) => s+e.amount)}')` → الحالة فيها `total` جاهز من الـ Cubit.
 - **كل ملف ≤ 100 سطر بلا استثناء** — يشمل Pages و Widgets و Cubits، ويُقاس بـ `wc -l` قبل التسليم.
@@ -58,10 +58,11 @@
 ## ⚙️ Coding Powers
 
 - **Functional Error Handling** بـ `dartz` (`Either<Failure, T>`).
-- `try-catch` في **DataSources فقط**.
+- **ممنوع `try-catch` في DataSources** — الالتقاط والتحويل إلى `Either<Failure, T>` في **Repositories فقط**.
 - لا `print()` — الـ logger الموحد فقط.
 - المكتبات الخارجية معزولة داخل `services/` أو `datasources/`.
 - التخزين المحلي عبر `PreferencesService` المسجَّلة في الـ DI — لا وصول مباشر.
+- مسارات Firestore؟ → ثوابت `FirestorePaths` في `core/firebase/` — **لا hardcoded strings**.
 - **`get_it` هو المصدر الوحيد للتبعيات** — لا `new` مباشر للخدمات.
 - UseCases ترث `UseCase<Type, Params>` الموحد — و `NoParams` عند عدم وجود باراميترات.
 - Entities كائنات صافية ترث `Equatable`.

@@ -1,12 +1,13 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
-import 'package:glassmorphism/glassmorphism.dart';
 
 import '../../../../core/localization/app_strings.dart';
 import '../../../../core/theme/app_colors.dart';
+import '../../../../core/theme/app_colors_extension.dart';
 import '../../../../core/theme/app_text_styles.dart';
 
 /// Stats row — values are placeholders until the home data layer lands.
+/// Light surface cards (Focus screen redesign).
 class HomeStatsRow extends StatelessWidget {
   const HomeStatsRow({super.key});
 
@@ -55,31 +56,31 @@ class _StatCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return GlassmorphicContainer(
-      width: double.infinity,
-      height: 100,
-      borderRadius: 16,
-      blur: 10,
-      alignment: Alignment.center,
-      border: 1,
-      linearGradient: const LinearGradient(
-        begin: Alignment.topLeft,
-        end: Alignment.bottomRight,
-        colors: [AppColors.glassWhite, AppColors.glassBorder],
-      ),
-      borderGradient: const LinearGradient(
-        begin: Alignment.topLeft,
-        end: Alignment.bottomRight,
-        colors: [AppColors.glassBorder, AppColors.glassWhite],
+    return Container(
+      padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 8),
+      decoration: BoxDecoration(
+        color: context.colors.card,
+        borderRadius: BorderRadius.circular(16),
+        border: Border.all(color: context.colors.softBorder),
       ),
       child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
+        mainAxisSize: MainAxisSize.min,
         children: [
-          Icon(icon, size: 24, color: Colors.white),
+          Icon(icon, size: 24, color: AppColors.primary),
           const SizedBox(height: 8),
-          Text(value, style: AppTextStyles.titleLarge),
+          Text(
+            value,
+            style: AppTextStyles.titleSurface.copyWith(
+              color: context.colors.textPrimary,
+            ),
+          ),
           const SizedBox(height: 4),
-          Text(titleKey.tr(), style: AppTextStyles.captionGlass),
+          Text(
+            titleKey.tr(),
+            style: AppTextStyles.captionGlass.copyWith(
+              color: context.colors.textSecondary,
+            ),
+          ),
         ],
       ),
     );

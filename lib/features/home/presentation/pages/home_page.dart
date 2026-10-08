@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../../core/navigator/app_navigator.dart';
-import '../../../../core/theme/app_colors.dart';
+import '../../../../core/theme/app_colors_extension.dart';
 import '../../../auth/presentation/cubit/auth_cubit.dart';
 import '../widgets/home_app_bar.dart';
 import '../widgets/home_quick_actions.dart';
@@ -25,13 +25,7 @@ class HomePage extends StatelessWidget {
         body: Container(
           width: double.infinity,
           height: double.infinity,
-          decoration: const BoxDecoration(
-            gradient: LinearGradient(
-              begin: Alignment.topCenter,
-              end: Alignment.bottomCenter,
-              colors: [AppColors.primary, AppColors.primaryDark],
-            ),
-          ),
+          color: context.colors.background,
           child: SafeArea(
             child: Column(
               children: [

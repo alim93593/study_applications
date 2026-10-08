@@ -41,7 +41,7 @@
 - **State Management:** استخدم `flutter_bloc` مع **`Cubit`** حصريًا (لا Bloc خام، لا setState لإدارة حالة التطبيق).
 - **State Pattern:** كل State خاص بـ Cubit **يجب** أن يستخدم نمط **`copyWith`** (أو `freezed`) لتحديثات الحالة غير القابلة للتغيير (Immutable).
 - **BlocProvider Scope:** امنح الـ Cubit دائمًا على **مستوى الشاشة** (`BlocProvider` داخل كل صفحة). **ممنوع** تسجيل Cubits خاصة بالـ UI بشكل عام في `main.dart` — الاستثناء الوحيد: الحالات العامة للتطبيق (Theme / Locale / Auth Session).
-- **UI Re-rendering:** استخدم **`BlocSelector`** (الافتراضي الإلزامي في المشروع) أو `buildWhen` داخل الـ Widgets بحيث يعاد بناء الـ Widget **فقط** عند تغيّر الخاصية المحددة من الحالة — لا إعادة بناء لصفحة كاملة مع كل emit.
+- **UI Re-rendering:** استخدم **`BlocSelector`** حصريًا (الافتراضي الإلزامي في المشروع) بحيث يعاد بناء الـ Widget **فقط** عند تغيّر الخاصية المحددة من الحالة — لا إعادة بناء لصفحة كاملة مع كل emit — **وممنوع `BlocBuilder` نهائيًا (حتى مع `buildWhen`)**.
 - **Stateless Only (مُحدَّث):** استخدم `StatelessWidget` حصريًا. **ممنوع `flutter_hooks` نهائيًا** — أي استخدام موجود يُزال. ابقِ stateless ما لم يكن هناك بديل؛ و`StatefulWidget` فقط في حالة **الضرورة القصوى** (ملكية `TextEditingController` / `AnimationController` / Stream subscriptions) وبلا أي خيار أبسط.
 - **Side Effects:** استخدم `BlocListener` حصريًا للـ Navigation والـ SnackBars والـ Dialogs — وليس أبدًا داخل الـ builders.
 - **Zero UI Logic (قاعدة مقدسة):** ممنوع منعًا باتًا كتابة أي منطق (Logic) داخل الـ UI — لا حسابات، لا تجميع (reduce/fold)، لا تحقق شرطي معقد، لا تنسيق تواريخ/أرقام، لا `if` لوجيكي للأعمال، ولا استدعاءات متسلسلة لمعالجة بيانات داخل الـ Widgets. كل منطق الأعمال والرسائل والحالات يُنفَّذ في **الـ Cubit** (أو UseCase للمنطق المعقد)، والـ Widget **يعرض الحالة فقط ويستدعي أحداث الـ Cubit**. القاعدة: "الـ UI يعرض ويُصدّر الأحداث فقط — الـ Cubit يفكر وقرر".
@@ -113,7 +113,9 @@
 ## 8. معالجة الأخطاء (Error Handling)
 
 - **الأسلوب:** Functional Error Handling باستخدام مكتبة `dartz` (`Either<Failure, T>`).
-- **القاعدة:** حصر الـ `try-catch` في طبقة الـ DataSources فقط.
+- **القاعدة (جديدة): ممنوع منعًا باتًا استخدام `try-catch` داخل طبقة الـ DataSources** — الـ DataSource يرفع الخطأ كما هو دون أي التقاط.
+- **الالتقاط والتحويل إلى `Either<Failure, T>` يتم حصريًا في طبقة Repositories** — وهي الطبقة الوحيدة التي تكتب `try-catch`.
+- الـ Cubits/UseCases/الواجهات لا تكتب `try-catch` إطلاقًا.
 
 ---
 
@@ -129,6 +131,7 @@
 - **Logging:** يمنع استخدام `print()` — استخدم الـ `logger` الموحد.
 - **Third-party Isolation:** تغليف المكتبات الخارجية داخل `services/` أو `datasources/` لضمان استقلالية طبقات الـ Domain والـ Presentation.
 - **Local Storage:** التعامل مع `SharedPreferences` أو أي تخزين محلي يكون عبر كلاس خدمي موحد (e.g. `PreferencesService`) مسجَّل في الـ DI.
+- **Firestore Paths:** ممنوع كتابة مسارات collections/documents كنصوص مباشرة (Hardcoded Strings) — كل المسارات عبر ثوابت `FirestorePaths` في `core/firebase/`.
 - **DI:** `get_it` هو المصدر الوحيد للتبعيات.
 
 ---

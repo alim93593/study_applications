@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../../../../core/localization/app_strings.dart';
 import '../../../../core/navigator/app_navigator.dart';
+import '../../../../core/theme/app_colors_extension.dart';
 import '../../../../core/theme/app_text_styles.dart';
 import '../../../auth/domain/entities/user_entity.dart';
 import 'profile_avatar.dart';
@@ -32,9 +33,19 @@ class ProfileDetails extends StatelessWidget {
         children: [
           ProfileAvatar(photoURL: user.photoURL),
           const SizedBox(height: 16),
-          Text(name, style: AppTextStyles.headlineMedium),
+          Text(
+            name,
+            style: AppTextStyles.headlineMedium.copyWith(
+              color: context.colors.textPrimary,
+            ),
+          ),
           const SizedBox(height: 8),
-          Text(user.email, style: AppTextStyles.bodyGlass),
+          Text(
+            user.email,
+            style: AppTextStyles.bodyMutedSurface.copyWith(
+              color: context.colors.textSecondary,
+            ),
+          ),
           const SizedBox(height: 24),
           ProfileInfoCard(
             icon: Icons.person,

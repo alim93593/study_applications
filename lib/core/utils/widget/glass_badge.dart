@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
-import '../../theme/app_colors.dart';
 import '../../theme/app_text_styles.dart';
+import 'glass_badge_type.dart';
 
 class GlassBadge extends StatelessWidget {
   final String text;
@@ -20,12 +20,12 @@ class GlassBadge extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
       decoration: BoxDecoration(
-        color: _getBackgroundColor(),
+        color: type.background,
         borderRadius: BorderRadius.circular(20),
-        border: Border.all(color: _getBorderColor(), width: 1),
+        border: Border.all(color: type.color, width: 1),
         boxShadow: [
           BoxShadow(
-            color: _getBackgroundColor().withValues(alpha: 0.3),
+            color: type.background.withValues(alpha: 0.3),
             blurRadius: 8,
             offset: const Offset(0, 2),
           ),
@@ -39,7 +39,7 @@ class GlassBadge extends StatelessWidget {
               width: 8,
               height: 8,
               decoration: BoxDecoration(
-                color: _getDotColor(),
+                color: type.color,
                 shape: BoxShape.circle,
               ),
             ),
@@ -49,65 +49,11 @@ class GlassBadge extends StatelessWidget {
             text,
             style: AppTextStyles.captionGlass.copyWith(
               fontWeight: FontWeight.w600,
-              color: _getTextColor(),
+              color: type.color,
             ),
           ),
         ],
       ),
     );
   }
-
-  Color _getBackgroundColor() {
-    switch (type) {
-      case GlassBadgeType.success:
-        return AppColors.success.withValues(alpha: 0.2);
-      case GlassBadgeType.error:
-        return AppColors.error.withValues(alpha: 0.2);
-      case GlassBadgeType.warning:
-        return AppColors.warning.withValues(alpha: 0.2);
-      case GlassBadgeType.info:
-        return AppColors.info.withValues(alpha: 0.2);
-    }
-  }
-
-  Color _getBorderColor() {
-    switch (type) {
-      case GlassBadgeType.success:
-        return AppColors.success;
-      case GlassBadgeType.error:
-        return AppColors.error;
-      case GlassBadgeType.warning:
-        return AppColors.warning;
-      case GlassBadgeType.info:
-        return AppColors.info;
-    }
-  }
-
-  Color _getTextColor() {
-    switch (type) {
-      case GlassBadgeType.success:
-        return AppColors.success;
-      case GlassBadgeType.error:
-        return AppColors.error;
-      case GlassBadgeType.warning:
-        return AppColors.warning;
-      case GlassBadgeType.info:
-        return AppColors.info;
-    }
-  }
-
-  Color _getDotColor() {
-    switch (type) {
-      case GlassBadgeType.success:
-        return AppColors.success;
-      case GlassBadgeType.error:
-        return AppColors.error;
-      case GlassBadgeType.warning:
-        return AppColors.warning;
-      case GlassBadgeType.info:
-        return AppColors.info;
-    }
-  }
 }
-
-enum GlassBadgeType { success, error, warning, info }

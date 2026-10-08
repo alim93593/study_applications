@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import '../../../../core/theme/app_colors.dart';
 import '../splash_text_animations.dart';
 
 /// Closing progress indicator of the splash intro — a direct child of the
@@ -19,7 +20,7 @@ class SplashLoading extends StatelessWidget {
           width: 44,
           height: 44,
           child: CircularProgressIndicator(
-            color: Colors.white.withValues(alpha: 0.75),
+            color: AppColors.primary.withValues(alpha: 0.75),
             strokeWidth: 2.5,
             strokeCap: StrokeCap.round,
           ),

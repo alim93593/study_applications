@@ -1,15 +1,15 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:glassmorphism/glassmorphism.dart';
 
 import '../../../../core/localization/app_strings.dart';
 import '../../../../core/theme/app_colors.dart';
+import '../../../../core/theme/app_colors_extension.dart';
 import '../../../../core/theme/app_text_styles.dart';
 import '../../../auth/presentation/cubit/auth_cubit.dart';
 
 /// Welcome card — the greeting name is selected from AuthState in the
-/// selector, never computed here.
+/// selector, never computed here. Light surface card (Focus screen redesign).
 class HomeWelcomeCard extends StatelessWidget {
   const HomeWelcomeCard({super.key});
 
@@ -18,57 +18,51 @@ class HomeWelcomeCard extends StatelessWidget {
     return BlocSelector<AuthCubit, AuthState, String>(
       selector: (state) => state.user?.name.split(' ').first ?? '',
       builder: (context, userName) {
-        return GlassmorphicContainer(
+        return Container(
           width: double.infinity,
-          height: 120,
-          borderRadius: 20,
-          blur: 20,
-          alignment: Alignment.center,
-          border: 2,
-          linearGradient: const LinearGradient(
-            begin: Alignment.topLeft,
-            end: Alignment.bottomRight,
-            colors: [AppColors.glassWhite, AppColors.glassBorder],
+          padding: const EdgeInsets.all(20),
+          decoration: BoxDecoration(
+            color: context.colors.card,
+            borderRadius: BorderRadius.circular(20),
+            border: Border.all(color: context.colors.softBorder),
           ),
-          borderGradient: const LinearGradient(
-            begin: Alignment.topLeft,
-            end: Alignment.bottomRight,
-            colors: [AppColors.glassBorder, AppColors.glassWhite],
-          ),
-          child: Padding(
-            padding: const EdgeInsets.all(20),
-            child: Row(
-              children: [
-                Container(
-                  width: 60,
-                  height: 60,
-                  decoration: BoxDecoration(
-                    color: AppColors.glassWhite,
-                    borderRadius: BorderRadius.circular(15),
-                  ),
-                  child: const Icon(
-                    Icons.waving_hand,
-                    size: 30,
-                    color: Colors.white,
-                  ),
+          child: Row(
+            children: [
+              Container(
+                width: 60,
+                height: 60,
+                decoration: BoxDecoration(
+                  color: context.colors.blueTint,
+                  borderRadius: BorderRadius.circular(15),
                 ),
-                const SizedBox(width: 16),
-                Expanded(
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(userName, style: AppTextStyles.titleLarge),
-                      const SizedBox(height: 4),
-                      Text(
-                        AppStrings.readyToLearn.tr(),
-                        style: AppTextStyles.labelGlass,
+                child: const Icon(
+                  Icons.waving_hand,
+                  size: 30,
+                  color: AppColors.primary,
+                ),
+              ),
+              const SizedBox(width: 16),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      userName,
+                      style: AppTextStyles.titleSurface.copyWith(
+                        color: context.colors.textPrimary,
                       ),
-                    ],
-                  ),
+                    ),
+                    const SizedBox(height: 4),
+                    Text(
+                      AppStrings.readyToLearn.tr(),
+                      style: AppTextStyles.bodyMutedSurface.copyWith(
+                        color: context.colors.textSecondary,
+                      ),
+                    ),
+                  ],
                 ),
-              ],
-            ),
+              ),
+            ],
           ),
         );
       },

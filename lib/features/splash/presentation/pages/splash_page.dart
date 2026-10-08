@@ -76,13 +76,7 @@ class _SplashPageState extends State<SplashPage> with TickerProviderStateMixin {
     return SplashRedirect(
       lastStatus: _lastStatus,
       child: AnnotatedRegion<SystemUiOverlayStyle>(
-        value: const SystemUiOverlayStyle(
-          statusBarColor: Colors.transparent,
-          statusBarIconBrightness: Brightness.light,
-          statusBarBrightness: Brightness.dark,
-          systemNavigationBarColor: Colors.transparent,
-          systemNavigationBarIconBrightness: Brightness.light,
-        ),
+        value: splashOverlayStyle(context),
         child: SplashScene(
           animations: _animations,
           textAnimations: _textAnimations,

@@ -92,4 +92,8 @@ abstract class AppTextStyles {
   );
   static const bodyNetwork = TextStyle(fontSize: 14, color: Colors.grey);
   static const hintGlass = TextStyle(fontSize: 14, color: Color(0xB3BDBDBD));
+  static const bodyMutedSurface = TextStyle(
+    fontSize: 14,
+    color: AppColors.textSecondary,
+  );
 }

@@ -2,6 +2,7 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 
 import '../../../../core/localization/app_strings.dart';
+import '../../../../core/theme/app_colors_extension.dart';
 import '../../../../core/theme/app_text_styles.dart';
 import '../splash_text_animations.dart';
 
@@ -21,7 +22,10 @@ class SplashSubtitle extends StatelessWidget {
         child: Text(
           AppStrings.yourLearningJourney.tr(),
           textAlign: TextAlign.center,
-          style: AppTextStyles.subtitleLarge,
+          style: AppTextStyles.subtitleLarge.copyWith(
+            color: context.colors.textSecondary,
+            letterSpacing: 0,
+          ),
         ),
       ),
     );

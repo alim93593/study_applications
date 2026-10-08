@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import '../../../../core/theme/app_colors.dart';
+
 /// Shimmer sweep that runs across the glass icon.
 class SplashShimmer extends StatelessWidget {
   const SplashShimmer({super.key, required this.shimmerController});
@@ -20,7 +22,7 @@ class SplashShimmer extends StatelessWidget {
                 end: Alignment(-0.4 + shimmerController.value * 2.0, 0),
                 colors: const [
                   Colors.transparent,
-                  Colors.white,
+                  AppColors.primary,
                   Colors.transparent,
                 ],
                 stops: const [0.0, 0.5, 1.0],
@@ -29,7 +31,7 @@ class SplashShimmer extends StatelessWidget {
             child: Container(
               width: 160,
               height: 160,
-              color: Colors.white.withValues(alpha: 0.1),
+              color: AppColors.primary.withValues(alpha: 0.1),
             ),
           ),
         );

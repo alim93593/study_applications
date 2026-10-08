@@ -42,7 +42,8 @@ abstract class AppValidators {
     if (value == null || value.isEmpty) {
       return AppStrings.phoneRequired.tr();
     }
-    if (!RegExp(r'^[0-9]{10,}$').hasMatch(value)) {
+    // رقم الموبايل المصري ثابت 11 رقم (010/011/012/015 + 8 أرقام).
+    if (!RegExp(r'^[0-9]{11}$').hasMatch(value.trim())) {
       return AppStrings.invalidPhone.tr();
     }
     return null;

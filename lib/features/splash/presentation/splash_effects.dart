@@ -5,9 +5,24 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../auth/presentation/cubit/auth_cubit.dart';
 import '../../../core/navigator/app_navigator.dart';
 
-/// Why: side effects (animation start, status bar, delayed auth probe and the
-/// final redirect) live outside the widget tree so splash_page stays
-/// declarative — the widget only renders and forwards cubit events.
+/// Why: side effects (animation start, delayed auth probe and the final
+/// redirect) live outside the widget tree so splash_page stays declarative.
+/// The status-bar style is applied ONLY via AnnotatedRegion in splash_page
+/// build — Theme.of must never run inside initState (framework crash).
+/// Theme-aware system chrome for the splash.
+/// Why: hardcoded dark icons were invisible on the dark splash background.
+SystemUiOverlayStyle splashOverlayStyle(BuildContext context) {
+  final isDark = Theme.of(context).brightness == Brightness.dark;
+  return SystemUiOverlayStyle(
+    statusBarColor: Colors.transparent,
+    statusBarIconBrightness: isDark ? Brightness.light : Brightness.dark,
+    statusBarBrightness: isDark ? Brightness.dark : Brightness.light,
+    systemNavigationBarColor: Colors.transparent,
+    systemNavigationBarIconBrightness:
+        isDark ? Brightness.light : Brightness.dark,
+  );
+}
+
 void startSplashEffects({
   required BuildContext context,
   required AnimationController controller,
@@ -15,16 +30,6 @@ void startSplashEffects({
   required AnimationController particleController,
   required AnimationController shimmerController,
 }) {
-  SystemChrome.setSystemUIOverlayStyle(
-    const SystemUiOverlayStyle(
-      statusBarColor: Colors.transparent,
-      statusBarIconBrightness: Brightness.light,
-      statusBarBrightness: Brightness.dark,
-      systemNavigationBarColor: Colors.transparent,
-      systemNavigationBarIconBrightness: Brightness.light,
-    ),
-  );
-
   controller.forward();
   glowController.repeat(reverse: true);
   particleController.repeat();

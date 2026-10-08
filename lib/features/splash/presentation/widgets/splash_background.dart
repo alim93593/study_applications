@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import '../../../../core/theme/app_colors.dart';
 import '../splash_animations.dart';
 import 'splash_particle_painter.dart';
 
@@ -31,10 +32,10 @@ class SplashBackground extends StatelessWidget {
                     shape: BoxShape.circle,
                     gradient: RadialGradient(
                       colors: [
-                        Colors.white.withValues(
-                          alpha: animations.radialOpacity.value,
+                        AppColors.primary.withValues(
+                          alpha: animations.radialOpacity.value * 0.18,
                         ),
-                        Colors.white.withValues(alpha: 0),
+                        AppColors.primary.withValues(alpha: 0),
                       ],
                     ),
                   ),

@@ -2,6 +2,7 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 
 import '../../theme/app_colors.dart';
+import '../../theme/app_colors_extension.dart';
 import '../../theme/app_text_styles.dart';
 import 'glass_input_container.dart';
 
@@ -20,6 +21,7 @@ class GlassTextFormField extends StatefulWidget {
     this.validator,
     this.onChanged,
     this.onFieldSubmitted,
+    this.isLightScreen = false,
   });
 
   final TextEditingController? controller;
@@ -32,6 +34,7 @@ class GlassTextFormField extends StatefulWidget {
   final String? Function(String?)? validator;
   final Function(String)? onChanged;
   final Function(String)? onFieldSubmitted;
+  final bool isLightScreen;
 
   @override
   State<GlassTextFormField> createState() => _GlassTextFormFieldState();
@@ -46,6 +49,7 @@ class _GlassTextFormFieldState extends State<GlassTextFormField> {
     return GlassInputContainer(
       isFocused: _isFocused,
       hasError: _hasError,
+      isLightScreen: widget.isLightScreen,
       child: TextFormField(
         controller: widget.controller,
         obscureText: widget.obscureText,
@@ -60,7 +64,11 @@ class _GlassTextFormFieldState extends State<GlassTextFormField> {
         onChanged: widget.onChanged,
         onFieldSubmitted: widget.onFieldSubmitted,
         onTap: () => setState(() => _isFocused = true),
-        style: AppTextStyles.bodySurface,
+        style: AppTextStyles.bodySurface.copyWith(
+          color: widget.isLightScreen
+              ? context.colors.textPrimary
+              : AppColors.textWhite,
+        ),
         decoration: InputDecoration(
           hintText: widget.hintText?.tr(),
           prefixIcon: widget.prefixIcon != null
@@ -68,6 +76,8 @@ class _GlassTextFormFieldState extends State<GlassTextFormField> {
                   widget.prefixIcon,
                   color: _isFocused
                       ? AppColors.primary
+                      : widget.isLightScreen
+                      ? context.colors.textSecondary
                       : AppColors.textSecondary,
                 )
               : null,

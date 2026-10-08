@@ -2,6 +2,8 @@ import 'dart:math' as math;
 
 import 'package:flutter/material.dart';
 
+import '../../../../core/theme/app_colors.dart';
+
 /// Rising light particles behind the splash content.
 class SplashParticlePainter extends CustomPainter {
   SplashParticlePainter({required this.progress});
@@ -30,7 +32,7 @@ class SplashParticlePainter extends CustomPainter {
       final particleSize = 1.0 + random.nextDouble() * 3.5;
       final alpha = (1.0 - t) * 0.5;
 
-      paint.color = Colors.white.withValues(alpha: alpha);
+      paint.color = AppColors.primary.withValues(alpha: alpha);
       canvas.drawCircle(Offset(x, y), particleSize, paint);
     }
   }

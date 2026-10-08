@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import '../../../../core/theme/app_colors.dart';
+import '../../../../core/theme/app_colors_extension.dart';
 import '../splash_animations.dart';
 import '../splash_text_animations.dart';
 import 'splash_background.dart';
@@ -31,14 +31,14 @@ class SplashScene extends StatelessWidget {
       body: Container(
         width: double.infinity,
         height: double.infinity,
-        decoration: const BoxDecoration(
+        decoration: BoxDecoration(
           gradient: LinearGradient(
             begin: Alignment.topLeft,
             end: Alignment.bottomRight,
             colors: [
-              AppColors.primaryDark,
-              AppColors.primary,
-              AppColors.primaryMid,
+              context.colors.background,
+              context.colors.mutedCard,
+              context.colors.background,
             ],
           ),
         ),
@@ -48,23 +48,27 @@ class SplashScene extends StatelessWidget {
               animations: animations,
               particleController: particleController,
             ),
-            SafeArea(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  const Spacer(flex: 3),
-                  SplashIconSection(
-                    animations: animations,
-                    shimmerController: shimmerController,
-                  ),
-                  const SizedBox(height: 55),
-                  SplashTitleSection(animations: textAnimations),
-                  const SizedBox(height: 24),
-                  SplashSubtitle(animations: textAnimations),
-                  const Spacer(flex: 3),
-                  SplashLoading(animations: textAnimations),
-                  const SizedBox(height: 55),
-                ],
+            Positioned.fill(
+              // fill-screen ضروري عشان الـ Column ياخد عرض الشاشة كامل
+              // وإلا الـ Stack يحجزه من الشمال (alignment topStart).
+              child: SafeArea(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    const Spacer(flex: 3),
+                    SplashIconSection(
+                      animations: animations,
+                      shimmerController: shimmerController,
+                    ),
+                    const SizedBox(height: 55),
+                    SplashTitleSection(animations: textAnimations),
+                    const SizedBox(height: 24),
+                    SplashSubtitle(animations: textAnimations),
+                    const Spacer(flex: 3),
+                    SplashLoading(animations: textAnimations),
+                    const SizedBox(height: 55),
+                  ],
+                ),
               ),
             ),
           ],

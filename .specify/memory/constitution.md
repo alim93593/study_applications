@@ -83,7 +83,8 @@ Sync Impact Report
 ### VI. Verified Delivery (NON-NEGOTIABLE)
 
 - Error handling is functional via `dartz` `Either<Failure, T>`; `try-catch`
-  is confined to DataSources; logging uses the unified logger — `print()` is
+  MUST NOT appear in DataSources — catching and conversion to `Failure` happen
+  only in Repositories; logging uses the unified logger — `print()` is
   prohibited.
 - Before any delivery: `flutter analyze` MUST report 0 issues, touched files
   MUST pass the 100-line check, and unit tests for Cubits/UseCases MUST be

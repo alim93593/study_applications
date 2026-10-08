@@ -79,12 +79,8 @@ class AuthCubit extends Cubit<AuthState> {
     emit(state.copyWith(status: AuthStatus.unauthenticated));
   }
 
-  void _error(String message) {
-    AppLogger.e(message);
-    emit(state.copyWith(status: AuthStatus.error, errorMessage: message));
-  }
-
-  // Emits loading, folds the result; failures are logged, success forwarded.
+  // Emits loading, folds the result; the failure is logged with its action
+  // context, while the emitted message stays a pure translation key for .tr().
   Future<void> _run<T>(
     Future<Either<Failure, T>> result,
     String action,
@@ -93,7 +89,15 @@ class AuthCubit extends Cubit<AuthState> {
     emit(state.copyWith(status: AuthStatus.loading));
     final outcome = await result;
     outcome.fold(
-      (failure) => _error('$action failed: ${failure.message}'),
+      (failure) {
+        AppLogger.e('$action failed: ${failure.message}');
+        emit(
+          state.copyWith(
+            status: AuthStatus.error,
+            errorMessage: failure.message,
+          ),
+        );
+      },
       onSuccess,
     );
   }

@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 
 import '../../../../core/localization/app_strings.dart';
 import '../../../../core/theme/app_colors.dart';
+import '../../../../core/theme/app_colors_extension.dart';
 import '../../../../core/theme/app_text_styles.dart';
 import '../splash_text_animations.dart';
 
@@ -30,10 +31,13 @@ class SplashTitleSection extends StatelessWidget {
                     return Text(
                       AppStrings.appName.tr(),
                       style: AppTextStyles.displayLarge.copyWith(
+                        color: context.colors.textPrimary,
                         letterSpacing: animations.titleLetterSpacing.value,
                         shadows: [
                           Shadow(
-                            color: Colors.white.withValues(alpha: glow * 0.5),
+                            color: AppColors.primary.withValues(
+                              alpha: glow * 0.35,
+                            ),
                             blurRadius: 30 * glow,
                           ),
                           Shadow(
@@ -65,14 +69,14 @@ class SplashTitleSection extends StatelessWidget {
                     gradient: const LinearGradient(
                       colors: [
                         Colors.transparent,
-                        Colors.white,
+                        AppColors.primary,
                         Colors.transparent,
                       ],
                     ),
                     borderRadius: BorderRadius.circular(2),
                     boxShadow: [
                       BoxShadow(
-                        color: Colors.white.withValues(
+                        color: AppColors.primary.withValues(
                           alpha: animations.dividerGlow.value * 0.4,
                         ),
                         blurRadius: 12,

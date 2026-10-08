@@ -1,11 +1,12 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../../core/localization/app_strings.dart';
 import '../../../../core/navigator/app_navigator.dart';
-import '../../../../core/theme/app_colors.dart';
 import '../../../../core/utils/snackbar/app_snackbar.dart';
 import '../cubit/auth_cubit.dart';
+import '../widgets/auth_background.dart';
 import '../widgets/auth_header.dart';
 import '../widgets/auth_link_row.dart';
 import '../widgets/forgot_password_link.dart';
@@ -39,29 +40,15 @@ class _LoginPageState extends State<LoginPage> {
           if (state.status == AuthStatus.error) {
             AppSnackBar.show(
               context,
-              message: state.errorMessage ?? '',
+              message: state.errorMessage?.tr() ?? '',
               isError: true,
             );
           } else if (state.status == AuthStatus.authenticated) {
             AppNavigator.pushReplacement(AppNavigator.home);
           }
         },
-        child: Container(
-          width: double.infinity,
-          height: double.infinity,
-          decoration: const BoxDecoration(
-            gradient: LinearGradient(
-              begin: Alignment.topLeft,
-              end: Alignment.bottomRight,
-              colors: [
-                AppColors.primaryDark,
-                AppColors.primary,
-                AppColors.primaryMid,
-              ],
-            ),
-          ),
-          child: SafeArea(
-            child: SingleChildScrollView(
+        child: AuthBackground(
+          child: SingleChildScrollView(
               padding: const EdgeInsets.symmetric(horizontal: 24),
               child: Column(
                 children: [
@@ -88,7 +75,6 @@ class _LoginPageState extends State<LoginPage> {
                 ],
               ),
             ),
-          ),
         ),
       ),
     );

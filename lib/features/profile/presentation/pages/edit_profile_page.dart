@@ -5,9 +5,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../../core/di/service_locator.dart';
 import '../../../../core/localization/app_strings.dart';
 import '../../../../core/navigator/app_navigator.dart';
-import '../../../../core/theme/app_colors.dart';
 import '../../../../core/utils/snackbar/app_snackbar.dart';
-import '../../../../core/utils/widget/glass_app_bar.dart';
+import '../../../../core/widgets/app_top_bar.dart';
 import '../../../auth/presentation/cubit/auth_cubit.dart';
 import '../cubit/profile_cubit.dart';
 import '../widgets/edit_profile_form.dart';
@@ -22,32 +21,13 @@ class EditProfilePage extends StatelessWidget {
       create: (context) =>
           sl<ProfileCubit>()..seed(context.read<AuthCubit>().state.user),
       child: Scaffold(
-        body: Container(
-          width: double.infinity,
-          height: double.infinity,
-          decoration: const BoxDecoration(
-            gradient: LinearGradient(
-              begin: Alignment.topCenter,
-              end: Alignment.bottomCenter,
-              colors: [AppColors.primary, AppColors.primaryDark],
-            ),
-          ),
-          child: SafeArea(
-            child: Column(
-              children: [
-                GlassAppBar(
-                  title: AppStrings.editProfile.tr(),
-                  showBackButton: true,
-                ),
-                Expanded(
-                  child: BlocListener<ProfileCubit, ProfileState>(
-                    listener: _onProfileChanged,
-                    child: const EditProfileForm(),
-                  ),
-                ),
-              ],
-            ),
-          ),
+        appBar: AppTopBar(
+          title: AppStrings.editProfile.tr(),
+          showBack: true,
+        ),
+        body: BlocListener<ProfileCubit, ProfileState>(
+          listener: _onProfileChanged,
+          child: const EditProfileForm(),
         ),
       ),
     );
@@ -63,7 +43,7 @@ class EditProfilePage extends StatelessWidget {
     } else if (state.status == ProfileStatus.error) {
       AppSnackBar.show(
         context,
-        message: state.errorMessage ?? '',
+        message: state.errorMessage?.tr() ?? '',
         isError: true,
       );
     }

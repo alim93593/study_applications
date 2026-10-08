@@ -10,11 +10,13 @@ class GlassNameField extends StatelessWidget {
     this.controller,
     this.validator,
     this.onChanged,
+    this.isLightScreen = false,
   });
 
   final TextEditingController? controller;
   final String? Function(String?)? validator;
   final Function(String)? onChanged;
+  final bool isLightScreen;
 
   @override
   Widget build(BuildContext context) {
@@ -25,6 +27,7 @@ class GlassNameField extends StatelessWidget {
       prefixIcon: Icons.person_outline,
       validator: validator ?? AppValidators.name,
       onChanged: onChanged,
+      isLightScreen: isLightScreen,
     );
   }
 }
