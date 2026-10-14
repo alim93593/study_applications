@@ -16,6 +16,9 @@ class NewTaskState extends Equatable {
   final bool submitted;
   final String failureMessage;
 
+  /// '' = وضع الإنشاء؛ غير فارغ = وضع التعديل بمهمة موجودة.
+  final String editingId;
+
   const NewTaskState({
     this.title = '',
     this.subject = '',
@@ -29,7 +32,10 @@ class NewTaskState extends Equatable {
     this.submitting = false,
     this.submitted = false,
     this.failureMessage = '',
+    this.editingId = '',
   });
+
+  bool get isEditing => editingId.isNotEmpty;
 
   NewTaskState copyWith({
     String? title,
@@ -44,6 +50,7 @@ class NewTaskState extends Equatable {
     bool? submitting,
     bool? submitted,
     String? failureMessage,
+    String? editingId,
   }) {
     return NewTaskState(
       title: title ?? this.title,
@@ -58,6 +65,7 @@ class NewTaskState extends Equatable {
       submitting: submitting ?? this.submitting,
       submitted: submitted ?? this.submitted,
       failureMessage: failureMessage ?? this.failureMessage,
+      editingId: editingId ?? this.editingId,
     );
   }
 
@@ -75,5 +83,6 @@ class NewTaskState extends Equatable {
     submitting,
     submitted,
     failureMessage,
+    editingId,
   ];
 }

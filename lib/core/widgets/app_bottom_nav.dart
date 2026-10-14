@@ -1,14 +1,15 @@
-import 'package:easy_localization/easy_localization.dart';
+import 'dart:ui';
+
 import 'package:flutter/material.dart';
 
+import '../di/service_locator.dart';
 import '../localization/app_strings.dart';
-import '../navigator/app_navigator.dart';
-import '../router/app_router.dart';
-import '../theme/app_colors.dart';
-import '../theme/app_colors_extension.dart';
-import '../theme/app_text_styles.dart';
+import '../../features/shell/presentation/cubit/shell_cubit.dart';
+import 'app_nav_item.dart';
 
-/// البوتون ناف الموحد (Focus / Tasks / Schedule / Library) كما في التصاميم.
+/// بوتون ناف بزجاج مصقول (Frosted Glass) — تمويه قوي + طبقة تلوين موحّدة
+/// بشدة تمويه بسيطة + فاصل شعري علوي + ظل صاعد ناعم، بأسلوب iOS/Material.
+/// Why: النسخة السابقة بتدرّج قوي (شفاف→سادة) بدت كتدرّج لوني مش زجاج.
 class AppBottomNav extends StatelessWidget {
   final int currentIndex;
 
@@ -23,77 +24,63 @@ class AppBottomNav extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    return DecoratedBox(
+      // ظل صاعد يفصل الزجاج عن المحتوى — عمق واقعي.
       decoration: BoxDecoration(
-        color: context.colors.card,
-        border: Border(top: BorderSide(color: context.colors.softBorder)),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withValues(alpha: isDark ? 0.45 : 0.08),
+            blurRadius: 24,
+            offset: const Offset(0, -8),
+          ),
+        ],
       ),
-      child: SafeArea(
-        top: false,
-        child: Row(
-          children: [
-            for (var i = 0; i < _items.length; i++)
-              Expanded(
-                child: _NavItem(
-                  icon: _items[i].$1,
-                  labelKey: _items[i].$2,
-                  isActive: currentIndex == i,
-                  onTap: currentIndex == i
-                      ? null
-                      : () => AppNavigator.pushReplacement(
-                          AppRouter.shell,
-                          arguments: i,
-                        ),
+      child: ClipRect(
+        child: BackdropFilter(
+          filter: ImageFilter.blur(sigmaX: 30, sigmaY: 30),
+          child: DecoratedBox(
+            decoration: BoxDecoration(
+              // طبقة زجاج شبه موحّدة: شفافية تسمح بظهور المحتوى المموّه خلفها.
+              // Why: الأبيض عالي الشفافية كان يختفي فوق الخلفية الفاتحة (أبيض
+              // على أبيض) → زجاج_LIGHT بتظليل رمادي-أزرق خفيف يبان كالدارك.
+              gradient: LinearGradient(
+                begin: Alignment.topCenter,
+                end: Alignment.bottomCenter,
+                colors: isDark
+                    ? const [Color(0xCC16181C), Color(0xB8101216)]
+                    : const [Color(0xE6F3F6F9), Color(0xCCEDF1F5)],
+              ),
+              border: Border(
+                top: BorderSide(
+                  color: isDark
+                      ? Colors.white.withValues(alpha: 0.15)
+                      : Colors.black.withValues(alpha: 0.12),
+                  width: 1,
                 ),
               ),
-          ],
+            ),
+            child: SafeArea(
+              top: false,
+              child: Row(
+                children: [
+                  for (var i = 0; i < _items.length; i++)
+                    Expanded(
+                    child: AppNavItem(
+                      icon: _items[i].$1,
+                      labelKey: _items[i].$2,
+                      isActive: currentIndex == i,
+                      // تبديل التبويب داخل الشل نفسه — لا إعادة بناء الصفحة.
+                      onTap: currentIndex == i
+                          ? null
+                          : () => sl<ShellCubit>().select(i),
+                    ),
+                    ),
+                ],
+              ),
+            ),
+          ),
         ),
-      ),
-    );
-  }
-}
-
-class _NavItem extends StatelessWidget {
-  final IconData icon;
-  final String labelKey;
-  final bool isActive;
-  final VoidCallback? onTap;
-
-  const _NavItem({
-    required this.icon,
-    required this.labelKey,
-    required this.isActive,
-    required this.onTap,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    final color = isActive ? AppColors.primary : context.colors.textHint;
-    return InkWell(
-      onTap: onTap,
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Container(
-            height: 3,
-            width: 36,
-            decoration: BoxDecoration(
-              color: isActive ? AppColors.primary : Colors.transparent,
-              borderRadius: BorderRadius.circular(3),
-            ),
-          ),
-          const SizedBox(height: 8),
-          Icon(icon, color: color, size: 22),
-          const SizedBox(height: 4),
-          Text(
-            labelKey.tr(),
-            style: AppTextStyles.captionGlass.copyWith(
-              color: color,
-              fontWeight: FontWeight.w600,
-            ),
-          ),
-          const SizedBox(height: 6),
-        ],
       ),
     );
   }

@@ -6,6 +6,12 @@ import '../entities/task_entity.dart';
 abstract class TasksRepository {
   Stream<List<TaskEntity>> watchTasks();
 
+  /// أول صفحة real-time (تحديثات حية للصفحة الأولى فقط).
+  Stream<List<TaskEntity>> watchTasksPage({int limit});
+
+  /// دفعة تالية — ترجع فاضي لو مفيش المزيد.
+  Future<Either<Failure, List<TaskEntity>>> getTasksNextPage({int limit});
+
   Future<Either<Failure, void>> addTask(TaskEntity task);
 
   Future<Either<Failure, void>> updateTask(TaskEntity task);

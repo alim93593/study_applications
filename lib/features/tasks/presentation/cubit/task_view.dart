@@ -12,6 +12,9 @@ class TaskView extends Equatable {
   final bool isDraft;
   final TaskStatus status;
 
+  /// الكيان الكامل للتنقل بوضع التعديل (الواجهة لا تفكك الحقول بنفسها).
+  final TaskEntity entity;
+
   const TaskView({
     required this.id,
     required this.title,
@@ -20,6 +23,7 @@ class TaskView extends Equatable {
     this.isOverdue = false,
     this.isDraft = false,
     required this.status,
+    required this.entity,
   });
 
   @override
@@ -31,5 +35,6 @@ class TaskView extends Equatable {
     isOverdue,
     isDraft,
     status,
+    entity,
   ];
 }

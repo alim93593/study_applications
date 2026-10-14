@@ -47,6 +47,39 @@ class FirebaseFirestoreService {
     return (query ?? ref).snapshots();
   }
 
+  /// باجنبيشن: جلب صفحة واحدة بعد مستند معيّن (cursor-based).
+  /// Why: تحميل كل المستندات دفعة واحدة يبطّأ التطبيق مع آلاف المستندات.
+  Future<QuerySnapshot<Map<String, dynamic>>> getCollectionPage({
+    required String collection,
+    required int limit,
+    DocumentSnapshot<Map<String, dynamic>>? startAfter,
+    String orderBy = 'createdAt',
+    bool descending = true,
+  }) {
+    Query<Map<String, dynamic>> ref = _firestore
+        .collection(collection)
+        .orderBy(orderBy, descending: descending)
+        .limit(limit);
+    if (startAfter != null) {
+      ref = ref.startAfterDocument(startAfter);
+    }
+    return ref.get();
+  }
+
+  /// باجنبيشن real-time: أول صفحة مع تحديثات حية.
+  Stream<QuerySnapshot<Map<String, dynamic>>> getCollectionPageStream({
+    required String collection,
+    required int limit,
+    String orderBy = 'createdAt',
+    bool descending = true,
+  }) {
+    return _firestore
+        .collection(collection)
+        .orderBy(orderBy, descending: descending)
+        .limit(limit)
+        .snapshots();
+  }
+
   Future<void> saveUserToFirestore({
     required String uid,
     required Map<String, dynamic> userData,

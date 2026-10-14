@@ -11,8 +11,6 @@ abstract class SettingsStrings {
   static const themeDark = 'theme_dark';
   static const themeSystem = 'theme_system';
   static const settingsPersonalInfo = 'settings_personal_info';
-  static const settingsSecurity = 'settings_security';
-  static const settingsSync = 'settings_sync';
   static const settingsDeepFocus = 'settings_deep_focus';
   static const settingsVersion = 'settings_version';
   static const settingsPrivacy = 'settings_privacy';

@@ -8,11 +8,18 @@ import '../cubit/tasks_state.dart';
 import 'task_card_parts.dart';
 
 /// بطاقة مهمة واحدة كما في تصميم Focus Matters (شريط جانبي + مربع اختيار).
+/// الجسم قابل للضغط → تعديل المهمة (onEdit).
 class TaskCard extends StatelessWidget {
   final TaskView task;
   final VoidCallback onToggle;
+  final VoidCallback onEdit;
 
-  const TaskCard({super.key, required this.task, required this.onToggle});
+  const TaskCard({
+    super.key,
+    required this.task,
+    required this.onToggle,
+    required this.onEdit,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -24,6 +31,13 @@ class TaskCard extends StatelessWidget {
         color: completed ? context.colors.mutedCard : context.colors.card,
         borderRadius: BorderRadius.circular(16),
         border: Border.all(color: context.colors.softBorder),
+        boxShadow: const [
+          BoxShadow(
+            color: AppColors.softShadow,
+            blurRadius: 12,
+            offset: Offset(0, 4),
+          ),
+        ],
       ),
       child: IntrinsicHeight(
         child: Row(
@@ -34,45 +48,50 @@ class TaskCard extends StatelessWidget {
               color: completed ? AppColors.secondaryDark : AppColors.primary,
             ),
             Expanded(
-              child: Padding(
-                padding: const EdgeInsets.all(16),
-                child: Row(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    TaskCheckbox(completed: completed, onTap: onToggle),
-                    const SizedBox(width: 12),
-                    Expanded(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            task.title,
-                            style: AppTextStyles.bodyStrong.copyWith(
-                              color: completed
-                                  ? context.colors.textHint
-                                  : context.colors.textPrimary,
-                              decoration: completed
-                                  ? TextDecoration.lineThrough
-                                  : null,
+              child: InkWell(
+                onTap: onEdit,
+                child: Padding(
+                  padding: const EdgeInsets.all(16),
+                  child: Row(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      TaskCheckbox(completed: completed, onTap: onToggle),
+                      const SizedBox(width: 12),
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              task.title,
+                              style: AppTextStyles.bodyStrong.copyWith(
+                                color: completed
+                                    ? context.colors.textHint
+                                    : context.colors.textPrimary,
+                                decoration: completed
+                                    ? TextDecoration.lineThrough
+                                    : null,
+                              ),
                             ),
-                          ),
-                          const SizedBox(height: 4),
-                          Text(
-                            task.meta,
-                            style: AppTextStyles.captionGlass.copyWith(
-                              color: task.isOverdue
-                                  ? AppColors.error
-                                  : context.colors.textSecondary,
+                            const SizedBox(height: 4),
+                            Text(
+                              task.meta,
+                              style: AppTextStyles.bodyMutedSurface.copyWith(
+                                fontSize: 13,
+                                fontWeight: FontWeight.w500,
+                                color: task.isOverdue
+                                    ? AppColors.error
+                                    : context.colors.textSecondary,
+                              ),
                             ),
-                          ),
-                          if (task.isDraft) ...[
-                            const SizedBox(height: 8),
-                            const TaskDraftBadge(),
+                            if (task.isDraft) ...[
+                              const SizedBox(height: 8),
+                              const TaskDraftBadge(),
+                            ],
                           ],
-                        ],
+                        ),
                       ),
-                    ),
-                  ],
+                    ],
+                  ),
                 ),
               ),
             ),

@@ -35,10 +35,12 @@ class AppColors {
   static const Color blueTint = Color(0xFFD9E9F7); // بطاقة الحالة الزرقاء
   static const Color navyCard = Color(0xFF3E5C76); // البطاقات الكحلية الداكنة
 
-  // Text Colors
-  static const Color textPrimary = Color(0xFF212121);
-  static const Color textSecondary = Color(0xFF757575);
-  static const Color textHint = Color(0xFFBDBDBD);
+  // Text Colors (light theme) — مقروءة على الخلفية الفاتحة F5F6F8
+  // Why: textHint القديم (BDBDBD) كان شبه مخفي على الأبيض/الرمادي الفاتح
+  // وبيوجع العين (تباين ضعيف جدًا) — اتظبط لدرجات أغمق قابلة للقراءة.
+  static const Color textPrimary = Color(0xFF1C1C1E);
+  static const Color textSecondary = Color(0xFF5F6368);
+  static const Color textHint = Color(0xFF8A9099);
   static const Color textWhite = Color(0xFFFFFFFF);
 
   // Status Colors
@@ -52,6 +54,9 @@ class AppColors {
   static const Color glassBorder = Color(0x80FFFFFF);
   static const Color glassShadow = Color(0x1A000000);
   static const Color glassBackground = Color(0x1AFFFFFF);
+
+  /// ظل ناعم موحّد للبطاقات على الأسطح الفاتحة (تجميل الشاشات).
+  static const Color softShadow = Color(0x14000000);
 
   // Dark Theme Colors
   static const Color darkBackground = Color(0xFF121212);

@@ -22,10 +22,12 @@ import '../../features/auth/presentation/cubit/forgot_password_cubit.dart';
 import '../../features/profile/presentation/cubit/profile_cubit.dart';
 import '../../features/settings/presentation/cubit/language_cubit.dart';
 import '../../features/settings/presentation/cubit/settings_cubit.dart';
+import '../../features/shell/presentation/cubit/shell_cubit.dart';
 import '../firebase/firebase_service.dart';
 import '../services/connectivity_service.dart';
 import '../services/preferences_service.dart';
 import '../theme/cubit/theme_cubit.dart';
+import 'home_feature_module.dart';
 import 'task_feature_module.dart';
 
 final sl = GetIt.instance;
@@ -36,13 +38,10 @@ Future<void> init() async {
   final auth = FirebaseAuth.instance;
   final firestore = FirebaseFirestore.instance;
   final storage = FirebaseStorage.instance;
-
-  // Register Firebase instances
   sl.registerLazySingleton(() => auth);
   sl.registerLazySingleton(() => firestore);
   sl.registerLazySingleton(() => storage);
 
-  // Core services (Firebase facade + connectivity check)
   sl.registerLazySingleton(
     () => FirebaseService(auth: auth, firestore: firestore, storage: storage),
   );
@@ -50,11 +49,8 @@ Future<void> init() async {
     () => ConnectivityServiceImpl(),
   );
 
-  // Unified local storage (theme / language / preferences)
   final prefs = await SharedPreferences.getInstance();
   sl.registerLazySingleton(() => PreferencesService(prefs));
-
-  // Data sources
   sl.registerLazySingleton<AuthRemoteDataSource>(
     () => AuthRemoteDataSourceImpl(firebaseAuth: sl(), firestore: sl()),
   );
@@ -64,10 +60,8 @@ Future<void> init() async {
     () => AuthRepositoryImpl(authRemoteDataSource: sl(), connectivity: sl()),
   );
 
-  // Use cases
-  // resetPasswordUseCase stays registered: no UI flow calls it yet, and the
-  // AuthCubit method was removed as dead code until the forgot-password
-  // screen lands.
+  // Use cases — ResetPasswordUseCase stays registered: the forgot-password
+  // screen uses it directly.
   sl.registerLazySingleton(() => SignInUseCase(sl()));
   sl.registerLazySingleton(() => SignUpUseCase(sl()));
   sl.registerLazySingleton(() => SignOutUseCase(sl()));
@@ -93,8 +87,9 @@ Future<void> init() async {
   );
   sl.registerFactory(() => ForgotPasswordCubit(resetPasswordUseCase: sl()));
 
-  // App-wide theme (allowed in main.dart per AGENTS — Theme exception)
+  // App-wide theme + shell tab (عامة التطبيق — الاستثناء المسموح).
   sl.registerLazySingleton(() => ThemeCubit(sl()));
+  sl.registerLazySingleton(() => ShellCubit());
 
   // Settings + Language (شاشات الإعدادات)
   sl.registerFactory(() => LanguageCubit(sl()));
@@ -102,4 +97,6 @@ Future<void> init() async {
 
   // Tasks + Schedule + Stats (في ملف منفصل لاحترام قاعدة 100 سطر)
   registerTaskFeatures(sl);
+  // Home (شاشة الفوكس)
+  registerHomeFeature(sl);
 }

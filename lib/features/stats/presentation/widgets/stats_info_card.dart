@@ -29,8 +29,16 @@ class StatsInfoCard extends StatelessWidget {
       width: double.infinity,
       padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
-        color: context.colors.mutedCard,
+        color: context.colors.card,
         borderRadius: BorderRadius.circular(16),
+        border: Border.all(color: context.colors.softBorder),
+        boxShadow: const [
+          BoxShadow(
+            color: AppColors.softShadow,
+            blurRadius: 10,
+            offset: Offset(0, 3),
+          ),
+        ],
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,

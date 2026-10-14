@@ -1,8 +1,10 @@
 import 'package:equatable/equatable.dart';
 
+import '../../../tasks/domain/entities/task_entity.dart';
 import '../../domain/entities/schedule_entry.dart';
 
 /// نسخة عرض جاهزة — كل النصوص المحسوبة تُبنى في الـ Cubit.
+/// Why: الـ task محفوظ هنا عشان tap على العصر يفتح التعديل مباشرة.
 class ScheduleEntryView extends Equatable {
   final String id;
   final String title;
@@ -14,6 +16,7 @@ class ScheduleEntryView extends Equatable {
   final double progress;
   final List<String> participants;
   final bool isResource;
+  final TaskEntity? task;
 
   const ScheduleEntryView({
     required this.id,
@@ -26,6 +29,7 @@ class ScheduleEntryView extends Equatable {
     this.progress = 0,
     this.participants = const [],
     this.isResource = false,
+    this.task,
   });
 
   @override
@@ -40,6 +44,7 @@ class ScheduleEntryView extends Equatable {
     progress,
     participants,
     isResource,
+    task,
   ];
 }
 

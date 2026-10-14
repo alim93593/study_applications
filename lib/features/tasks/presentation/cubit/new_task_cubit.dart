@@ -1,20 +1,20 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:uuid/uuid.dart';
 
-import '../../../../core/localization/new_task_strings.dart';
 import '../../domain/entities/task_entity.dart';
 import '../../domain/repositories/subjects_repository.dart';
 import '../../domain/repositories/tasks_repository.dart';
 import 'new_task_state.dart';
+import 'new_task_submission_mixin.dart';
 import 'subject_options_mixin.dart';
 
-/// منطق نموذج "مهمة جديدة": التحقق وخيارات المواد والكتابة على Firestore.
-/// خيارات المواد (ستريم + حفظ) في SubjectOptionsMixin — مادة جديدة تُحفظ
-/// في users/{uid}/subjects فور إضافتها (FR-S01).
-class NewTaskCubit extends Cubit<NewTaskState> with SubjectOptionsMixin {
+/// منطق نموذج "مهمة جديدة/تعديل": التحقق وخيارات المواد والكتابة على
+/// Firestore. الإرسال في TaskSubmissionMixin والمواد في SubjectOptionsMixin.
+class NewTaskCubit extends Cubit<NewTaskState>
+    with SubjectOptionsMixin, TaskSubmissionMixin {
   final TasksRepository _repository;
   final SubjectsRepository _subjectsRepository;
+  TaskEntity? _editing;
 
   NewTaskCubit({
     required TasksRepository repository,
@@ -26,7 +26,34 @@ class NewTaskCubit extends Cubit<NewTaskState> with SubjectOptionsMixin {
   }
 
   @override
+  TasksRepository get tasksRepository => _repository;
+
+  @override
   SubjectsRepository get subjectsRepository => _subjectsRepository;
+
+  @override
+  TaskEntity? get editingTask => _editing;
+
+  /// تعبئة النموذج ببيانات مهمة موجودة (وضع التعديل) — null = وضع الإنشاء.
+  void startEditing(TaskEntity? task) {
+    if (task == null) return;
+    _editing = task;
+    final d = task.dueDate;
+    emit(
+      state.copyWith(
+        editingId: task.id,
+        title: task.title,
+        subject: task.subject,
+        dueDate: d,
+        dueDateDisplay: d == null ? '' : _formatDue(d),
+        focusLevel: task.focusLevel,
+        notes: task.notes,
+      ),
+    );
+  }
+
+  static String _formatDue(DateTime d) =>
+      DateFormat('d MMM, h:mm a').format(d);
 
   void onTitleChanged(String value) => emit(state.copyWith(title: value));
   void onNotesChanged(String value) => emit(state.copyWith(notes: value));
@@ -44,44 +71,12 @@ class NewTaskCubit extends Cubit<NewTaskState> with SubjectOptionsMixin {
       state.copyWith(
         requestDatePicker: false,
         dueDate: date,
-        dueDateDisplay: date == null
-            ? ''
-            : '${date.month}/${date.day}/${date.year}',
+        dueDateDisplay: date == null ? '' : _formatDue(date),
       ),
     );
   }
 
   void clearFailure() => emit(state.copyWith(failureMessage: ''));
-
-  Future<void> submitAsTask() => _submit(TaskStatus.pending);
-
-  Future<void> submitAsDraft() => _submit(TaskStatus.draft);
-
-  Future<void> _submit(TaskStatus status) async {
-    if (state.title.trim().isEmpty) {
-      emit(state.copyWith(failureMessage: NewTaskStrings.errorTaskTitle.tr()));
-      return;
-    }
-    emit(state.copyWith(submitting: true, failureMessage: ''));
-    final result = await _repository.addTask(
-      TaskEntity(
-        id: const Uuid().v4(),
-        title: state.title.trim(),
-        subject: state.subject,
-        dueDate: status == TaskStatus.draft ? null : state.dueDate,
-        focusLevel: state.focusLevel,
-        notes: state.notes,
-        status: status,
-        createdAt: DateTime.now(),
-      ),
-    );
-    result.fold(
-      (failure) => emit(
-        state.copyWith(submitting: false, failureMessage: failure.message.tr()),
-      ),
-      (_) => emit(state.copyWith(submitting: false, submitted: true)),
-    );
-  }
 
   @override
   Future<void> close() {

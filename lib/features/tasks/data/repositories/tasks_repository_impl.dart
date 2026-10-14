@@ -1,5 +1,3 @@
-import 'dart:async';
-
 import 'package:dartz/dartz.dart';
 
 import '../../../../core/error/failures.dart';
@@ -10,18 +8,22 @@ import '../../domain/entities/task_entity.dart';
 import '../../domain/repositories/tasks_repository.dart';
 import '../datasources/tasks_remote_data_source.dart';
 import '../models/task_model.dart';
+import 'tasks_pagination.dart';
 
 /// طبقة الالتقاط الوحيدة المسموح فيها بـ try-catch + **فحص الاتصال قبل أي
 /// تعامل مع Firebase** (نفس فلسفة network في main): أوفلاين → فشل مفهوم.
 class TasksRepositoryImpl implements TasksRepository {
   final TasksRemoteDataSource _dataSource;
   final ConnectivityService _connectivity;
+  late final TasksPagination _pagination;
 
   TasksRepositoryImpl({
     required TasksRemoteDataSource dataSource,
     required ConnectivityService connectivity,
   }) : _dataSource = dataSource,
-       _connectivity = connectivity;
+       _connectivity = connectivity {
+    _pagination = TasksPagination(dataSource: dataSource, connectivity: connectivity);
+  }
 
   @override
   Stream<List<TaskEntity>> watchTasks() async* {
@@ -29,14 +31,19 @@ class TasksRepositoryImpl implements TasksRepository {
       yield const <TaskEntity>[];
       return;
     }
-    yield* _dataSource.watchTasks().transform(
-      StreamTransformer.fromHandlers(
-        handleError:
-            (Object _, StackTrace _, EventSink<List<TaskEntity>> sink) {
-              sink.add(const <TaskEntity>[]);
-            },
-      ),
-    );
+    yield* _dataSource.watchTasks().handleError((_) => <TaskEntity>[]);
+  }
+
+  @override
+  Stream<List<TaskEntity>> watchTasksPage({int limit = 20}) {
+    return _pagination.watchFirstPage(limit: limit);
+  }
+
+  @override
+  Future<Either<Failure, List<TaskEntity>>> getTasksNextPage({
+    int limit = 20,
+  }) {
+    return _pagination.nextPage(limit: limit);
   }
 
   Future<Either<Failure, void>> _execute(

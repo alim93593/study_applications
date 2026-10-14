@@ -28,4 +28,9 @@ abstract class TasksStrings {
   static const taskAddFailed = 'task_add_failed';
   static const taskUpdateFailed = 'task_update_failed';
   static const taskDeleteFailed = 'task_delete_failed';
+  static const taskDelete = 'task_delete';
+  static const taskDeleteTitle = 'task_delete_title';
+  static const taskDeleteConfirm = 'task_delete_confirm';
+  static const taskDeleted = 'task_deleted';
+  static const taskLoadFailed = 'task_load_failed';
 }

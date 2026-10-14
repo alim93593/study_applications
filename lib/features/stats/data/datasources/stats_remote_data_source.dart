@@ -1,9 +1,13 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+
 import '../../../../core/firebase/firebase_service.dart';
 import '../../../../core/firebase/firestore_paths.dart';
 import '../../domain/entities/study_session.dart';
 
 abstract class StatsRemoteDataSource {
   Stream<List<StudySession>> watchSessions();
+
+  Future<void> addSession(StudySession session);
 }
 
 /// قراءة جلسات التركيز من users/{uid}/sessions — **صفر try-catch** (الدستور).
@@ -37,5 +41,21 @@ class StatsRemoteDataSourceImpl implements StatsRemoteDataSource {
                 ..sort((a, b) => b.date.compareTo(a.date));
           return sessions;
         });
+  }
+
+  @override
+  Future<void> addSession(StudySession session) {
+    final path = _path;
+    if (path == null) {
+      throw StateError('sessions: cannot write without a signed-in user');
+    }
+    return _firebase.firestore.addDocument(
+      collection: path,
+      data: {
+        'subject': session.subject,
+        'minutes': session.minutes,
+        'date': Timestamp.fromDate(session.date),
+      },
+    );
   }
 }

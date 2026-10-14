@@ -68,7 +68,7 @@ abstract class AppTextStyles {
     color: AppColors.glassWhite,
   );
   static const captionGlass = TextStyle(
-    fontSize: 12,
+    fontSize: 13,
     color: AppColors.glassWhite,
   );
 

@@ -15,7 +15,10 @@ class TasksState extends Equatable {
   final double insightProgress;
   final bool isLoading;
   final String failureMessage;
+  final String successMessage;
   final int selectedTab; // 0 = pending, 1 = completed
+  final bool hasMore;
+  final bool isLoadingMore;
 
   const TasksState({
     this.pending = const [],
@@ -27,7 +30,10 @@ class TasksState extends Equatable {
     this.insightProgress = 0,
     this.isLoading = true,
     this.failureMessage = '',
+    this.successMessage = '',
     this.selectedTab = 0,
+    this.hasMore = true,
+    this.isLoadingMore = false,
   });
 
   TasksState copyWith({
@@ -40,7 +46,10 @@ class TasksState extends Equatable {
     double? insightProgress,
     bool? isLoading,
     String? failureMessage,
+    String? successMessage,
     int? selectedTab,
+    bool? hasMore,
+    bool? isLoadingMore,
   }) {
     return TasksState(
       pending: pending ?? this.pending,
@@ -52,7 +61,10 @@ class TasksState extends Equatable {
       insightProgress: insightProgress ?? this.insightProgress,
       isLoading: isLoading ?? this.isLoading,
       failureMessage: failureMessage ?? this.failureMessage,
+      successMessage: successMessage ?? this.successMessage,
       selectedTab: selectedTab ?? this.selectedTab,
+      hasMore: hasMore ?? this.hasMore,
+      isLoadingMore: isLoadingMore ?? this.isLoadingMore,
     );
   }
 
@@ -67,6 +79,9 @@ class TasksState extends Equatable {
     insightProgress,
     isLoading,
     failureMessage,
+    successMessage,
     selectedTab,
+    hasMore,
+    isLoadingMore,
   ];
 }

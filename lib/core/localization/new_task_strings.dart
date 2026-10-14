@@ -4,6 +4,7 @@ abstract class NewTaskStrings {
   NewTaskStrings._();
 
   static const newTaskTitle = 'new_task_title';
+  static const taskEditTitle = 'task_edit_title';
   static const newTaskSubtitle = 'new_task_subtitle';
   static const createTask = 'create_task';
   static const saveAsDraft = 'save_as_draft';

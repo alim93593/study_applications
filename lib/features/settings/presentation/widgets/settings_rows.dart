@@ -9,8 +9,10 @@ import '../../../../core/theme/app_colors.dart';
 import '../../../../core/theme/app_colors_extension.dart';
 import '../../../../core/theme/app_text_styles.dart';
 
-/// صفوف الإعدادات (FR-029/031): معلومات الشخصية، الأمان، المزامنة، اللغة.
-/// الأمان والمزامنة عرض فقط (خارج نطاق البناء حسب الافتراضات).
+/// صفوف الإعدادات (FR-029/031): معلومات الشخصية، اللغة.
+/// Why: صفوف الأمان والمزامنة كانوا عرض فقط بلا أي منطق — اتشالوا عشان
+/// ما يوهموش المستخدم بوجود ميزة مش موجودة (أمان FirebaseAuth و Firestore
+/// التلقائي شغالين في الخلفية بلا حاجة لصفحة منفصلة).
 class SettingsRows extends StatelessWidget {
   const SettingsRows({super.key});
 
@@ -28,16 +30,6 @@ class SettingsRows extends StatelessWidget {
             icon: Icons.person_outline_rounded,
             labelKey: SettingsStrings.settingsPersonalInfo,
             onTap: () => AppNavigator.push(AppRouter.editProfile),
-          ),
-          Divider(color: context.colors.softBorder, height: 1),
-          const _SettingsRow(
-            icon: Icons.shield_outlined,
-            labelKey: SettingsStrings.settingsSecurity,
-          ),
-          Divider(color: context.colors.softBorder, height: 1),
-          const _SettingsRow(
-            icon: Icons.cloud_sync_outlined,
-            labelKey: SettingsStrings.settingsSync,
           ),
           Divider(color: context.colors.softBorder, height: 1),
           _SettingsRow(

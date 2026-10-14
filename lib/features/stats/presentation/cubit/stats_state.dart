@@ -14,18 +14,20 @@ class MilestoneView extends Equatable {
 class StatsState extends Equatable {
   final String focusHoursDisplay;
   final List<double> weeklyBars;
+  final List<String> weeklyBarLabels;
   final String completedDisplay;
   final double weeklyGoalValue;
   final String weeklyGoalDisplay;
   final String avgSessionDisplay;
   final String consistencyDisplay;
-  final List<({String subject, String hoursDisplay})> distribution;
+  final List<({String subject, String hoursDisplay, double progress})> distribution;
   final List<MilestoneView> milestones;
   final bool isLoading;
 
   const StatsState({
     this.focusHoursDisplay = '0',
     this.weeklyBars = const [],
+    this.weeklyBarLabels = const [],
     this.completedDisplay = '0/0',
     this.weeklyGoalValue = 0,
     this.weeklyGoalDisplay = '',
@@ -39,18 +41,20 @@ class StatsState extends Equatable {
   StatsState copyWith({
     String? focusHoursDisplay,
     List<double>? weeklyBars,
+    List<String>? weeklyBarLabels,
     String? completedDisplay,
     double? weeklyGoalValue,
     String? weeklyGoalDisplay,
     String? avgSessionDisplay,
     String? consistencyDisplay,
-    List<({String subject, String hoursDisplay})>? distribution,
+    List<({String subject, String hoursDisplay, double progress})>? distribution,
     List<MilestoneView>? milestones,
     bool? isLoading,
   }) {
     return StatsState(
       focusHoursDisplay: focusHoursDisplay ?? this.focusHoursDisplay,
       weeklyBars: weeklyBars ?? this.weeklyBars,
+      weeklyBarLabels: weeklyBarLabels ?? this.weeklyBarLabels,
       completedDisplay: completedDisplay ?? this.completedDisplay,
       weeklyGoalValue: weeklyGoalValue ?? this.weeklyGoalValue,
       weeklyGoalDisplay: weeklyGoalDisplay ?? this.weeklyGoalDisplay,
@@ -66,6 +70,7 @@ class StatsState extends Equatable {
   List<Object?> get props => [
     focusHoursDisplay,
     weeklyBars,
+    weeklyBarLabels,
     completedDisplay,
     weeklyGoalValue,
     weeklyGoalDisplay,

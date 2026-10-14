@@ -3,31 +3,37 @@ import 'dart:async';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import '../../../../core/utils/subject_label.dart';
+import '../../../tasks/domain/entities/task_entity.dart';
+import '../../../tasks/domain/repositories/tasks_repository.dart';
 import '../../domain/entities/schedule_entry.dart';
-import '../../domain/repositories/schedule_repository.dart';
 import 'schedule_state.dart';
 
-/// كل حسابات العرض (الوقت، النوع، نسبة الإنجاز) هنا — صفر منطق في الواجهات.
+/// الجدول اليومي **مُشتق من المهام** (مصدر الحقيقة الوحيد):
+/// مهام اليوم + المتأخرة (pending) + ما أُنجز اليوم.
+/// Why: كوليكسشن schedule المنفصل لم يكن يكتبه أحد → فراغ دائم.
 class ScheduleCubit extends Cubit<ScheduleState> {
-  final ScheduleRepository _repository;
-  StreamSubscription<List<ScheduleEntry>>? _subscription;
+  final TasksRepository _tasksRepository;
+  StreamSubscription<List<TaskEntity>>? _subscription;
 
-  ScheduleCubit({required ScheduleRepository repository})
-    : _repository = repository,
+  ScheduleCubit({required TasksRepository tasksRepository})
+    : _tasksRepository = tasksRepository,
       super(
         ScheduleState(
           dateLabel: DateFormat('EEEE, d MMMM yyyy').format(DateTime.now()),
         ),
       ) {
-    _subscription = _repository.watchToday().listen(_onEntriesChanged);
+    _subscription = _tasksRepository.watchTasks().listen(_onTasksChanged);
   }
 
-  void _onEntriesChanged(List<ScheduleEntry> entries) {
-    final views = entries.map(_toView).toList();
-    final percent = entries.isEmpty
-        ? 0.0
-        : entries.map((e) => e.progress).reduce((a, b) => a + b) /
-              entries.length;
+  void _onTasksChanged(List<TaskEntity> tasks) {
+    final now = DateTime.now();
+    final today = DateTime(now.year, now.month, now.day);
+    final relevant = tasks.where((t) => _isRelevant(t, today)).toList()
+      ..sort((a, b) => (a.dueDate ?? now).compareTo(b.dueDate ?? now));
+    final views = relevant.map((t) => _toView(t)).toList();
+    final done = relevant.where((t) => t.status == TaskStatus.completed).length;
+    final percent = relevant.isEmpty ? 0.0 : done / relevant.length;
     emit(
       state.copyWith(
         entries: views,
@@ -38,26 +44,41 @@ class ScheduleCubit extends Cubit<ScheduleState> {
     );
   }
 
-  ScheduleEntryView _toView(ScheduleEntry entry) {
-    return ScheduleEntryView(
-      id: entry.id,
-      title: entry.title,
-      type: entry.type,
-      typeLabel: entry.type.labelKey.tr(),
-      timeLabel: _timeLabel(entry.startTime),
-      description: entry.description,
-      location: entry.location,
-      progress: entry.progress,
-      participants: entry.participants,
-      isResource: entry.type == ScheduleEntryType.resource,
-    );
+  bool _isRelevant(TaskEntity t, DateTime today) {
+    if (t.status == TaskStatus.draft) return false;
+    final due = t.dueDate;
+    if (due != null) {
+      final dueDay = DateTime(due.year, due.month, due.day);
+      if (dueDay == today) return true;
+      if (dueDay.isBefore(today) && t.status != TaskStatus.completed) {
+        return true; // متأخرة — تحتاج انتباه اليوم.
+      }
+    }
+    final done = t.completedAt;
+    if (done != null) {
+      final doneDay = DateTime(done.year, done.month, done.day);
+      if (doneDay == today) return true;
+    }
+    return false;
   }
 
-  String _timeLabel(DateTime time) {
-    final hour12 = time.hour % 12 == 0 ? 12 : time.hour % 12;
-    final period = time.hour < 12 ? 'AM' : 'PM';
-    final minute = time.minute.toString().padLeft(2, '0');
-    return '$hour12:$minute $period';
+  ScheduleEntryView _toView(TaskEntity t) {
+    final due = t.dueDate;
+    return ScheduleEntryView(
+      id: t.id,
+      title: t.title,
+      type: ScheduleEntryType.deepFocus,
+      typeLabel: t.subject.subjectLabel,
+      timeLabel: due == null
+          ? '--:--'
+          : '${due.hour % 12 == 0 ? 12 : due.hour % 12}:'
+                '${due.minute.toString().padLeft(2, '0')} '
+                '${due.hour < 12 ? 'AM' : 'PM'}',
+      description: t.notes,
+      progress: t.status == TaskStatus.completed ? 1 : 0,
+      isResource: false,
+      task: t,
+    );
   }
 
   @override

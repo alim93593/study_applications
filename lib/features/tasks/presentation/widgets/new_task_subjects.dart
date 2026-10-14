@@ -6,6 +6,7 @@ import '../../../../core/localization/new_task_strings.dart';
 import '../../../../core/theme/app_colors.dart';
 import '../../../../core/theme/app_colors_extension.dart';
 import '../../../../core/theme/app_text_styles.dart';
+import '../../../../core/utils/subject_label.dart';
 import '../../../../core/widgets/app_section_label.dart';
 import '../cubit/new_task_cubit.dart';
 import '../cubit/new_task_state.dart';
@@ -40,7 +41,7 @@ class NewTaskSubjects extends StatelessWidget {
               children: [
                 for (final subject in options)
                   SubjectChip(
-                    label: subject.tr(),
+                    label: subject.subjectLabel,
                     isSelected: selected == subject,
                     onTap: () => cubit.onSubjectSelected(subject),
                   ),

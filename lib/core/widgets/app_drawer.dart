@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../features/auth/presentation/cubit/auth_cubit.dart';
+import '../../features/shell/presentation/cubit/shell_cubit.dart';
 import '../localization/app_strings.dart';
 import '../localization/settings_strings.dart';
 import '../navigator/app_navigator.dart';
@@ -50,9 +51,15 @@ class AppDrawer extends StatelessWidget {
                   ),
                 ),
                 onTap: () {
+                  // Why: نقرأ الـ cubit قبل pop — بعد pop ممكن الـ context
+                  // يبقى deactivated ويرمي ProviderNotFound.
+                  final shellCubit = context.read<ShellCubit>();
                   Navigator.of(context).pop();
                   if (item.$3 == AppRouter.stats) {
-                    AppNavigator.pushReplacement(AppRouter.shell, arguments: 3);
+                    // الدرج جوه الشل أصلاً — نبدّل التبويب فقط.
+                    // ممنوع popUntil(shell): أسماء الراويتس null فكان يمسح
+                    // كل الشاشات (اللي بيبقى منها شاشة سودا).
+                    shellCubit.select(3);
                   } else {
                     AppNavigator.push(item.$3);
                   }

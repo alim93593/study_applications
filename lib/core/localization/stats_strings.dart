@@ -19,4 +19,18 @@ abstract class StatsStrings {
   static const milestoneBibliophileDesc = 'milestone_bibliophile_desc';
   static const milestoneSprint = 'milestone_sprint';
   static const milestoneSprintDesc = 'milestone_sprint_desc';
+  static const sessionSaveFailed = 'session_save_failed';
+  static const focusSessionTitle = 'focus_session_title';
+  static const focusStart = 'focus_start';
+  static const focusStop = 'focus_stop';
+  static const statsNoDistribution = 'stats_no_distribution';
+  static const statsNoMilestones = 'stats_no_milestones';
+  static const consistencyNone = 'stats_consistency_none';
+  static const dayShortMon = 'day_short_mon';
+  static const dayShortTue = 'day_short_tue';
+  static const dayShortWed = 'day_short_wed';
+  static const dayShortThu = 'day_short_thu';
+  static const dayShortFri = 'day_short_fri';
+  static const dayShortSat = 'day_short_sat';
+  static const dayShortSun = 'day_short_sun';
 }

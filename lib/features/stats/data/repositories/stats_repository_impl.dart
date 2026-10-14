@@ -1,5 +1,10 @@
 import 'dart:async';
 
+import 'package:dartz/dartz.dart';
+
+import '../../../../core/error/failures.dart';
+import '../../../../core/localization/app_strings.dart';
+import '../../../../core/localization/stats_strings.dart';
 import '../../../../core/services/connectivity_service.dart';
 import '../../domain/entities/study_session.dart';
 import '../../domain/repositories/stats_repository.dart';
@@ -30,5 +35,18 @@ class StatsRepositoryImpl implements StatsRepository {
             },
       ),
     );
+  }
+
+  @override
+  Future<Either<Failure, void>> addSession(StudySession session) async {
+    if (!await _connectivity.isConnected) {
+      return Left(ServerFailure(AppStrings.noInternetConnection));
+    }
+    try {
+      await _dataSource.addSession(session);
+      return const Right(null);
+    } catch (_) {
+      return Left(ServerFailure(StatsStrings.sessionSaveFailed));
+    }
   }
 }

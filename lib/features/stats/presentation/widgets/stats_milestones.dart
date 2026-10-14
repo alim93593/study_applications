@@ -8,6 +8,7 @@ import '../../../../core/theme/app_colors_extension.dart';
 import '../../../../core/theme/app_text_styles.dart';
 import '../cubit/stats_cubit.dart';
 import '../cubit/stats_state.dart';
+import 'stats_empty_card.dart';
 
 /// إنجازات التعلّم المكتسبة (المكافآت تظهر فقط عند تحقيقها من البيانات).
 class StatsMilestones extends StatelessWidget {
@@ -24,7 +25,11 @@ class StatsMilestones extends StatelessWidget {
     return BlocSelector<StatsCubit, StatsState, List<MilestoneView>>(
       selector: (s) => s.milestones,
       builder: (context, milestones) {
-        if (milestones.isEmpty) return const SizedBox.shrink();
+        if (milestones.isEmpty) {
+          return StatsEmptyCard(
+            message: StatsStrings.statsNoMilestones.tr(),
+          );
+        }
         return Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [

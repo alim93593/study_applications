@@ -2,13 +2,13 @@ import 'dart:async';
 
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-
 import '../../domain/entities/study_session.dart';
 import '../../domain/repositories/stats_repository.dart';
 import '../../domain/stats_calculator.dart';
 import '../../../../core/localization/stats_strings.dart';
 import '../../../tasks/domain/entities/task_entity.dart';
 import '../../../tasks/domain/repositories/tasks_repository.dart';
+import 'stats_label_keys.dart';
 import 'stats_state.dart';
 
 /// يجمع جلسات التركيز ومهام المستخدم ويحسب كل أرقام الشاشة (صفر منطق واجهات).
@@ -64,21 +64,42 @@ class StatsCubit extends Cubit<StatsState> {
           _sessions,
         ).toStringAsFixed(1),
         weeklyBars: StatsCalculator.weeklyBars(_sessions, now),
+        weeklyBarLabels: List.generate(
+          7,
+          (i) => StatsLabelKeys.weekdayKey(
+            now.subtract(Duration(days: 6 - i)).weekday,
+          ).tr(),
+        ),
         completedDisplay: '${completed.length}/$total',
         weeklyGoalValue: goalValue.clamp(0, 1),
         weeklyGoalDisplay: '${(goalValue * 100).round()}%',
         avgSessionDisplay: '${StatsCalculator.avgSessionMinutes(_sessions)}',
-        consistencyDisplay: delta >= 0
+        consistencyDisplay: _sessions.isEmpty
+            ? StatsStrings.consistencyNone.tr()
+            : delta >= 0
             ? StatsStrings.consistencyUp.tr(args: ['$delta'])
             : StatsStrings.consistencyDown.tr(args: ['${-delta}']),
-        distribution: [
-          for (final d in StatsCalculator.distribution(_sessions))
-            (subject: d.subject, hoursDisplay: '${d.hours.round()}h'),
-        ],
+        distribution: _buildDistribution(),
         milestones: milestones,
         isLoading: false,
       ),
     );
+  }
+
+  List<({String subject, String hoursDisplay, double progress})>
+  _buildDistribution() {
+    final dist = StatsCalculator.distribution(_sessions);
+    final totalHours = dist.fold<double>(0, (s, d) => s + d.hours);
+    return [
+      for (final d in dist)
+        (
+          subject: d.subject,
+          hoursDisplay: '${d.hours.round()} ${StatsStrings.unitHours.tr()}',
+          progress: totalHours == 0
+              ? 0.3
+              : (d.hours / totalHours).clamp(0.05, 1.0).toDouble(),
+        ),
+    ];
   }
 
   @override

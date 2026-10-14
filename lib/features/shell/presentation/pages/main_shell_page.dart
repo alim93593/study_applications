@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import '../../../../core/di/service_locator.dart';
 import '../../../../core/navigator/app_navigator.dart';
 import '../../../../core/widgets/app_bottom_nav.dart';
 import '../../../../core/widgets/app_drawer.dart';
@@ -10,14 +11,14 @@ import '../../../home/presentation/pages/home_page.dart';
 import '../../../schedule/presentation/pages/schedule_page.dart';
 import '../../../stats/presentation/pages/stats_page.dart';
 import '../../../tasks/presentation/pages/tasks_page.dart';
+import '../cubit/shell_cubit.dart';
 
-/// الهيكل الرئيسي للتطبيق: شريط علوي + أربعة تبويبات + بوتون ناف.
-/// Why: التنقل بين التبويبات عبر pushReplacement لمعامل الراوتر —
-/// بلا setState ولا hooks (Stateless بالكامل).
+/// الهيكل الرئيسي: تبويب واحد حيّ (ShellCubit + IndexedStack).
+/// Why: pushReplacement كان يهدم الشل ويبنيه من جديد مع كل tap → التايمر
+/// يموت والصفحات تعيد تحميل Firestore كل مرة (بطء + فقدان الجلسة).
+/// الاختيار يحدث في AppRouter مرة واحدة فقط.
 class MainShellPage extends StatelessWidget {
-  final int initialIndex;
-
-  const MainShellPage({super.key, this.initialIndex = 0});
+  const MainShellPage({super.key});
 
   static const List<Widget> _tabs = [
     HomePage(),
@@ -28,24 +29,48 @@ class MainShellPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final index = initialIndex.clamp(0, _tabs.length - 1);
+    // Why: لا نستدعي select هنا — إعادة بناء الشل (ثيم/لغة) كانت بترجّع
+    // التبويب لـ 0 وتقتل الجلسة. الاختيار يحصل مرة واحدة في AppRouter فقط.
+    final shellCubit = sl<ShellCubit>();
     // الخروج (signOut) يتطلب توجيهًا لشاشة الدخول — عبر BlocListener.
-    return BlocListener<AuthCubit, AuthState>(
-      listenWhen: (prev, curr) =>
-          curr.status == AuthStatus.unauthenticated &&
-          prev.status == AuthStatus.loading,
-      listener: (context, state) =>
-          AppNavigator.pushReplacement(AppNavigator.login),
-      child: Scaffold(
-        drawer: const AppDrawer(),
-        body: SafeArea(
-          child: Column(
+    return BlocProvider<ShellCubit>.value(
+      value: shellCubit,
+      child: BlocListener<AuthCubit, AuthState>(
+        listenWhen: (prev, curr) =>
+            curr.status == AuthStatus.unauthenticated &&
+            prev.status == AuthStatus.loading,
+        listener: (context, state) =>
+            AppNavigator.pushReplacement(AppNavigator.login),
+        child: Scaffold(
+          drawer: const AppDrawer(),
+          body: Stack(
             children: [
-              const AppTopBar(),
-              Expanded(
-                child: IndexedStack(index: index, children: _tabs),
+              SafeArea(
+                bottom: false,
+                child: Column(
+                  children: [
+                    const AppTopBar(),
+                    Expanded(
+                      child: BlocSelector<ShellCubit, ShellState, int>(
+                        selector: (s) => s.index,
+                        builder: (context, index) =>
+                            IndexedStack(index: index, children: _tabs),
+                      ),
+                    ),
+                  ],
+                ),
               ),
-              AppBottomNav(currentIndex: index),
+              // الناف الزجاجي فوق المحتوى — السكرول يمرق تحته فيتموّه.
+              Positioned(
+                left: 0,
+                right: 0,
+                bottom: 0,
+                child: BlocSelector<ShellCubit, ShellState, int>(
+                  selector: (s) => s.index,
+                  builder: (context, index) =>
+                      AppBottomNav(currentIndex: index),
+                ),
+              ),
             ],
           ),
         ),

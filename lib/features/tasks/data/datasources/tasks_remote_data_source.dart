@@ -4,9 +4,17 @@ import '../../../../core/firebase/firebase_service.dart';
 import '../../../../core/firebase/firestore_paths.dart';
 import '../../domain/entities/task_entity.dart';
 import '../models/task_model.dart';
+import 'tasks_pagination_data_source.dart';
 
 abstract class TasksRemoteDataSource {
   Stream<List<TaskEntity>> watchTasks();
+
+  Stream<QuerySnapshot<Map<String, dynamic>>> watchTasksPage({int limit});
+
+  Future<QuerySnapshot<Map<String, dynamic>>> getTasksAfter({
+    required int limit,
+    required DocumentSnapshot<Map<String, dynamic>> startAfter,
+  });
 
   Future<void> addTask(TaskModel task);
 
@@ -22,9 +30,12 @@ abstract class TasksRemoteDataSource {
 /// الـ DataSource يرفع الخطأ كما هو والمسارات من FirestorePaths.
 class TasksRemoteDataSourceImpl implements TasksRemoteDataSource {
   final FirebaseService _firebase;
+  late final TasksPaginationDataSource _pagination;
 
   TasksRemoteDataSourceImpl({required FirebaseService firebase})
-    : _firebase = firebase;
+    : _firebase = firebase {
+    _pagination = TasksPaginationDataSource(firebase: firebase);
+  }
 
   String? get _path {
     final uid = _firebase.auth.currentUser?.uid;
@@ -43,20 +54,27 @@ class TasksRemoteDataSourceImpl implements TasksRemoteDataSource {
   }
 
   @override
+  Stream<QuerySnapshot<Map<String, dynamic>>> watchTasksPage({
+    int limit = 20,
+  }) => _pagination.watchTasksPage(limit: limit);
+
+  @override
+  Future<QuerySnapshot<Map<String, dynamic>>> getTasksAfter({
+    required int limit,
+    required DocumentSnapshot<Map<String, dynamic>> startAfter,
+  }) => _pagination.getTasksAfter(limit: limit, startAfter: startAfter);
+
+  @override
   Future<void> addTask(TaskModel task) async {
     final path = _path;
-    if (path == null) {
-      return;
-    }
+    if (path == null) return;
     await _firebase.firestore.addDocument(collection: path, data: task.toMap());
   }
 
   @override
   Future<void> updateTask(TaskModel task) async {
     final path = _path;
-    if (path == null) {
-      return;
-    }
+    if (path == null) return;
     await _firebase.firestore.updateDocument(
       collection: path,
       documentId: task.id,
@@ -67,9 +85,7 @@ class TasksRemoteDataSourceImpl implements TasksRemoteDataSource {
   @override
   Future<void> toggleComplete(String id, {required bool completed}) async {
     final path = _path;
-    if (path == null) {
-      return;
-    }
+    if (path == null) return;
     await _firebase.firestore.updateDocument(
       collection: path,
       documentId: id,
@@ -85,9 +101,7 @@ class TasksRemoteDataSourceImpl implements TasksRemoteDataSource {
   @override
   Future<void> deleteTask(String id) async {
     final path = _path;
-    if (path == null) {
-      return;
-    }
+    if (path == null) return;
     await _firebase.firestore.deleteDocument(collection: path, documentId: id);
   }
 }

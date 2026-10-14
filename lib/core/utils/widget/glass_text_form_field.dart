@@ -64,10 +64,12 @@ class _GlassTextFormFieldState extends State<GlassTextFormField> {
         onChanged: widget.onChanged,
         onFieldSubmitted: widget.onFieldSubmitted,
         onTap: () => setState(() => _isFocused = true),
+        // Why: زجاج الـ auth فاتح (white70) — النص لازم يكون غامق عشان
+        // يبان؛ الأبيض كان بيغسل على الفاتح. الشاشات الفاتحة تاخد الثيم.
         style: AppTextStyles.bodySurface.copyWith(
           color: widget.isLightScreen
               ? context.colors.textPrimary
-              : AppColors.textWhite,
+              : AppColors.textPrimary,
         ),
         decoration: InputDecoration(
           hintText: widget.hintText?.tr(),
@@ -82,7 +84,11 @@ class _GlassTextFormFieldState extends State<GlassTextFormField> {
                 )
               : null,
           suffixIcon: widget.suffixIcon,
-          hintStyle: AppTextStyles.hintGlass,
+          hintStyle: widget.isLightScreen
+              ? AppTextStyles.hintGlass
+              : AppTextStyles.hintGlass.copyWith(
+                  color: AppColors.textSecondary,
+                ),
           border: InputBorder.none,
           contentPadding: const EdgeInsets.symmetric(
             horizontal: 16,
