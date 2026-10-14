@@ -2,12 +2,14 @@ import 'dart:async';
 
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import '../../domain/entities/study_session.dart';
-import '../../domain/repositories/stats_repository.dart';
-import '../../domain/stats_calculator.dart';
+
 import '../../../../core/localization/stats_strings.dart';
 import '../../../tasks/domain/entities/task_entity.dart';
 import '../../../tasks/domain/repositories/tasks_repository.dart';
+import '../../domain/entities/study_session.dart';
+import '../../domain/repositories/stats_repository.dart';
+import '../../domain/stats_calculator.dart';
+import 'stats_computations.dart';
 import 'stats_label_keys.dart';
 import 'stats_state.dart';
 
@@ -44,20 +46,6 @@ class StatsCubit extends Cubit<StatsState> {
     final total = _tasks.length;
     final goalValue = total == 0 ? 0.0 : completed.length / total;
     final delta = StatsCalculator.consistencyDelta(_sessions, now);
-    final milestones = <MilestoneView>[
-      if (StatsCalculator.readingMilestone(_sessions))
-        MilestoneView(
-          title: StatsStrings.milestoneBibliophile.tr(),
-          description: StatsStrings.milestoneBibliophileDesc.tr(),
-        ),
-      if (StatsCalculator.sprintMilestone(
-        completed.map((t) => t.completedAt ?? t.createdAt).toList(),
-      ))
-        MilestoneView(
-          title: StatsStrings.milestoneSprint.tr(),
-          description: StatsStrings.milestoneSprintDesc.tr(),
-        ),
-    ];
     emit(
       StatsState(
         focusHoursDisplay: StatsCalculator.focusHours(
@@ -79,27 +67,11 @@ class StatsCubit extends Cubit<StatsState> {
             : delta >= 0
             ? StatsStrings.consistencyUp.tr(args: ['$delta'])
             : StatsStrings.consistencyDown.tr(args: ['${-delta}']),
-        distribution: _buildDistribution(),
-        milestones: milestones,
+        distribution: StatsComputations.distribution(_sessions),
+        milestones: StatsComputations.milestones(_sessions, completed),
         isLoading: false,
       ),
     );
-  }
-
-  List<({String subject, String hoursDisplay, double progress})>
-  _buildDistribution() {
-    final dist = StatsCalculator.distribution(_sessions);
-    final totalHours = dist.fold<double>(0, (s, d) => s + d.hours);
-    return [
-      for (final d in dist)
-        (
-          subject: d.subject,
-          hoursDisplay: '${d.hours.round()} ${StatsStrings.unitHours.tr()}',
-          progress: totalHours == 0
-              ? 0.3
-              : (d.hours / totalHours).clamp(0.05, 1.0).toDouble(),
-        ),
-    ];
   }
 
   @override
