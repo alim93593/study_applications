@@ -1,14 +1,11 @@
-import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import '../../../../core/localization/home_strings.dart';
-import '../../../../core/localization/stats_strings.dart';
 import '../../../../core/theme/app_colors.dart';
-import '../../../../core/theme/app_text_styles.dart';
 import '../cubit/home_cubit.dart';
 import '../cubit/home_state.dart';
 import 'home_weekly_bar.dart';
+import 'home_weekly_chart_header.dart';
 
 /// مخطط أعمدة أسبوعى لتركيز آخر 7 أيام — بيانات حقيقية من الجلسات.
 /// Why: بطاقة متدرجة + إجمالي الأسبوع + أعمدة متوهجة (المستخدم طلب "مدلع").
@@ -47,48 +44,10 @@ class HomeWeeklyChart extends StatelessWidget {
         ),
         builder: (context, data) {
           final maxMin = data.minutes.fold<int>(0, (a, b) => a > b ? a : b);
-          final hours = (data.total / 60).toStringAsFixed(1);
           return Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Row(
-                children: [
-                  Icon(
-                    Icons.insights_rounded,
-                    color: Colors.white.withValues(alpha: 0.85),
-                    size: 20,
-                  ),
-                  const SizedBox(width: 8),
-                  Expanded(
-                    child: Text(
-                      HomeStrings.weeklyFocus.tr(),
-                      style: AppTextStyles.labelMedium.copyWith(
-                        color: Colors.white.withValues(alpha: 0.9),
-                        letterSpacing: 1.1,
-                      ),
-                    ),
-                  ),
-                  // إجمالي الأسبوع — رقم كبير مدلّع.
-                  Text(
-                    hours,
-                    style: AppTextStyles.displayLarge.copyWith(
-                      color: Colors.white,
-                      fontSize: 28,
-                      fontWeight: FontWeight.w800,
-                    ),
-                  ),
-                  const SizedBox(width: 4),
-                  Padding(
-                    padding: const EdgeInsets.only(bottom: 4),
-                    child: Text(
-                      StatsStrings.unitHours.tr(),
-                      style: AppTextStyles.captionGlass.copyWith(
-                        color: Colors.white.withValues(alpha: 0.7),
-                      ),
-                    ),
-                  ),
-                ],
-              ),
+              HomeWeeklyChartHeader(totalMinutes: data.total),
               const SizedBox(height: 18),
               Row(
                 crossAxisAlignment: CrossAxisAlignment.end,

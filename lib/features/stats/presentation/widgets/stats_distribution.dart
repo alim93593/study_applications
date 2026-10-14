@@ -6,9 +6,9 @@ import '../../../../core/localization/stats_strings.dart';
 import '../../../../core/theme/app_colors.dart';
 import '../../../../core/theme/app_colors_extension.dart';
 import '../../../../core/theme/app_text_styles.dart';
-import '../../../../core/utils/subject_label.dart';
 import '../cubit/stats_cubit.dart';
 import '../cubit/stats_state.dart';
+import 'stats_distribution_row.dart';
 import 'stats_empty_card.dart';
 
 /// توزيع الوقت على المواد — أشرطة تقدم ملوّنة (النِسب محسوبة في Cubit).
@@ -50,7 +50,11 @@ class StatsDistribution extends StatelessWidget {
             children: [
               Row(
                 children: [
-                  Icon(Icons.pie_chart_rounded, size: 20, color: AppColors.primary),
+                  Icon(
+                    Icons.pie_chart_rounded,
+                    size: 20,
+                    color: AppColors.primary,
+                  ),
                   const SizedBox(width: 8),
                   Text(
                     StatsStrings.statsDistribution.tr(),
@@ -63,53 +67,11 @@ class StatsDistribution extends StatelessWidget {
               ),
               const SizedBox(height: 16),
               for (var i = 0; i < items.length; i++)
-                Padding(
-                  padding: const EdgeInsets.only(bottom: 14),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Row(
-                        children: [
-                          Container(
-                            width: 10,
-                            height: 10,
-                            decoration: BoxDecoration(
-                              color: _palette[i % _palette.length],
-                              borderRadius: BorderRadius.circular(3),
-                            ),
-                          ),
-                          const SizedBox(width: 10),
-                          Expanded(
-                            child: Text(
-                              items[i].subject.subjectLabel,
-                              maxLines: 1,
-                              overflow: TextOverflow.ellipsis,
-                              style: AppTextStyles.bodyLarge.copyWith(
-                                color: context.colors.textPrimary,
-                                fontWeight: FontWeight.w600,
-                              ),
-                            ),
-                          ),
-                          Text(
-                            items[i].hoursDisplay,
-                            style: AppTextStyles.bodyStrong.copyWith(
-                              color: _palette[i % _palette.length],
-                            ),
-                          ),
-                        ],
-                      ),
-                      const SizedBox(height: 6),
-                      ClipRRect(
-                        borderRadius: BorderRadius.circular(4),
-                        child: LinearProgressIndicator(
-                          value: items[i].progress,
-                          minHeight: 6,
-                          color: _palette[i % _palette.length],
-                          backgroundColor: context.colors.mutedCard,
-                        ),
-                      ),
-                    ],
-                  ),
+                StatsDistributionRow(
+                  subject: items[i].subject,
+                  hoursDisplay: items[i].hoursDisplay,
+                  progress: items[i].progress,
+                  color: _palette[i % _palette.length],
                 ),
             ],
           ),
